@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Signup</title>
+{% endblock %}
+
+
+{% block style %}
+    <link type="text/css" rel="stylesheet" href="../static/styles/base.css">
+{% endblock %}
+
+
+{% block header %}
+    <h2>Signup</h2>
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        <label class="input-box">
+            <div class="description">Username</div>
+            <div><input type="text" name="username" value="{{ fields['username'] }}"></div>
+            <div class="error box"> {{ errors["username"] }}</div>
+        </label >
+        <label class="input-box">
+            <div class="description">Password</div>
+            <div><input type="password" name="password"></div>
+            <div class="error box"> {{ errors["password"] }}</div>
+        </label >
+        <label class="input-box">
+            <div class="description">Verify Password</div>
+            <div><input type="password" name="verify"></div>
+            <div class="error"> {{ errors["verify"] }}</div>
+        </label >
+        <label class="input-box">
+            <div class="description">Email (optional)</div>
+            <div><input type="text" name="email" value="{{ fields['email'] }}"></div>
+            <div class="error box"> {{ errors["email"] }}</div>
+        </label >
+        <input type="submit">
+    </form>
+{% endblock %}

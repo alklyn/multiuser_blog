@@ -1,0 +1,26 @@
+.input-box {
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.box {
+    float:right;
+}
+
+.description {
+    text-align: right;
+    color: 111;
+    width: 7em;
+}
+
+.error {
+    color: red;
+}
+
+.description {
+    margin-right: 10px;
+}
+
+form {
+    display: block;
+}
