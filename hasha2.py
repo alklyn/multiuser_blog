@@ -70,7 +70,7 @@ def make_pw_hash(username, pssswd, **kw):
         salt = make_salt()
 
     return "{},{}".format(
-        hashlib.sha256(username + pssswd + salt).hexdigest(), salt)
+        hashlib.sha512(username + pssswd + salt).hexdigest(), salt)
 
 
 def valid_pw(name, pw, h):
