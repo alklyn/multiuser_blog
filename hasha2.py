@@ -8,39 +8,37 @@ def hash_str(s, secret):
     """ Return hash of string """
     return hmac.new(secret, s).hexdigest()
 
-def make_secure_val(s, secret):
+def make_secure_val(my_str, secret):
     """
-    Make a hash of the number of visits
-    My code didn't work when I used a comma between the hash & the value
-    """
-    return "{}_{}".format(s, hash_str(s, secret))
+    Make a hash of the input string my_str.
 
-def check_secure_val(hashed_str, secret):
+    Output: A string in the form "my_str|hash_of-my_str"
     """
-    Check to see if hashed string, hashed_str is valid
+    return "{}|{}".format(my_str, hash_str(my_str, secret))
+
+def check_secure_val(my_hash, secret):
+    """
+    Check to see if hashed string, my_hash is valid
 
     Input
     =====
-    hashed_str: a string of the format s,HASH
-    where s  is the original string & HASH is the hash of s
+    hashed_str: a string of the form "my_str,HASH"
+    where my_str is the original string & HASH is the hash of my_str
 
-    secret: The secret used to hash s.
+    secret: The secret used to hash my_str.
 
     Ouput
     =====
-    s: If hashed_str is valid
+    my_str: If hashed_str is valid
     None: If hashed_str is not valid
     """
-
-    print("test val = {}".format(h))
-    if h:
-        h_list = h.split("_")
+    if my_hash:
+        h_list = my_hash.split("|")
         if len(h_list) == 2:
-            value = h_list[0]
+            my_str = h_list[0]
             hashed = h_list[1]
-            if hash_str(value ,secret) == hashed:
-                return value
-    #I no return value is set None is returned
+            if hash_str(my_str ,secret) == hashed:
+                return my_str
 
 
 def make_salt():

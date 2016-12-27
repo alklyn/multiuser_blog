@@ -18,7 +18,8 @@ jinja_env = \
     jinja2.Environment(
     loader = jinja2.FileSystemLoader(
         template_dir), autoescape=True)
-SECRET = "ma7aK0Ay3HuRud@K0r!y3RiN0taP1rawHoor3"
+
+SECRET = "ma7aK0Ay3HuRud@K0r!y3RiN0taP1rawHoor3P!x1M@gar0"
 
 class User(db.Model):
     """
@@ -161,6 +162,7 @@ class Welcome(Handler):
             self.render("welcome.html", username=user.username)
         else:
             self.redirect("/blog/signup")
+
 
 app = webapp2.WSGIApplication([
     ('/blog/signup', Signup),
