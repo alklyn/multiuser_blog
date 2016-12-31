@@ -3,7 +3,7 @@ import re
 
 
 user_re =  re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
-pass_re =  re.compile(r"^.{3,20}$")
+pass_re =  re.compile(r"^.{8,20}$")
 email_re =  re.compile(r"^[\S]+@[\S]+.[\S]+$")
 
 
