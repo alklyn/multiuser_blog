@@ -1,11 +1,9 @@
 """
 signup page
 """
-
 import os
 import jinja2
 import webapp2
-from validate import validate
 from hasha2 import make_pw_hash
 from hasha2 import valid_pw
 from hasha2 import make_secure_val
@@ -29,8 +27,7 @@ SECRET = "ma7aK0Ay3HuRud@K0r!y3RiN0taP1rawHoor3P!x1M@gar0"
 
 class User(db.Model):
     """
-    Create entity called User.
-    Entities are googles's equivalent to tables.
+    Entity for storing user details.
     """
     username = db.StringProperty(required=True)
     pw_hash = db.StringProperty(required=True)
@@ -46,6 +43,9 @@ def fetch_data(username):
 
 
 class Handler(webapp2.RequestHandler):
+    """
+    Base class for all the app's request handlers
+    """
     def write(self, *a, **kw):
         self.response.write(*a, **kw)
 
@@ -55,6 +55,16 @@ class Handler(webapp2.RequestHandler):
 
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
+
+    def login_user(self, userid):
+        """
+        Create cookie containing userid & redirect to welcome page
+        """
+        new_cookie_val = make_secure_val(str(userid), SECRET)
+        self.response.headers.add_header(
+            "Set-Cookie",
+            "userid={};Path=/".format(new_cookie_val))
+        self.redirect("/blog/welcome")
 
 
 class Signup(Handler):
@@ -73,7 +83,8 @@ class Signup(Handler):
 
         if not USER_RE.match(fields["username"]):
             errors["username"] = "That's not a valid username."
-
+        elif self.check_if_user_exists(fields["username"]):
+            errors["username"] = "That user already exists."
         if fields["password"] == fields["verify"]:
             if not PASS_RE.match(fields["password"]):
                 errors["password"] = "That's not a valid password."
@@ -96,16 +107,10 @@ class Signup(Handler):
         errors = self.validate(fields)
         if len(errors.keys()):
             self.render("signup.html", fields=fields, errors=errors)
-        elif self.check_if_user_exists(fields["username"]):
-            errors["username"] = "That user already exists."
-            self.render("signup.html", fields=fields, errors=errors)
         else:
             userid = self.create_user(fields)
             new_cookie_val = make_secure_val(str(userid), SECRET)
-            self.response.headers.add_header(
-                "Set-Cookie",
-                "userid={};Path=/".format(new_cookie_val))
-            self.redirect("/blog/welcome")
+            self.login_user(userid)
 
     def create_user(self, fields):
         """
@@ -152,11 +157,7 @@ class Login(Handler):
 
         userid = self.validate_login(fields)
         if userid:
-            new_cookie_val = make_secure_val(str(userid), SECRET)
-            self.response.headers.add_header(
-                "Set-Cookie",
-                "userid={};Path=/".format(new_cookie_val))
-            self.redirect("/blog/welcome")
+            self.login_user(userid)
 
         error = "Invalid login."
         self.render("login.html", username=fields["username"], error=error)
