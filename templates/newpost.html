@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %} New Post {% endblock %}
+
+{% block style %}
+    {{ super() }}
+    <link type="text/css" rel="stylesheet" href="../static/styles/newpost.css">
+{% endblock %}
+
+        {% block header %}
+            <h1> New Post </h1>
+        {% endblock %}
+
+        {% block content %}
+
+            <form method="post">
+
+                <div class="row">
+                    <div class="col-md6">
+                        <label>
+                            <div> subject </div>
+                            <div> <input type="text" name="subject" value="{{ subject }}"> </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md6">
+                        <label>
+                            <div> Blog </div>
+                            <div> <textarea name="content">{{ content }}</textarea> </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md6">
+                        <button> submit </button>
+                    </div>
+                </div>
+            </form>
+            <br>
+            <div class="error">{{ error }}</div>
+
+        {% endblock %}

@@ -1,0 +1,26 @@
+label {
+    display: block;
+    font-size: 1em;
+}
+
+/*Put space between element of the "data-entry" class.*/
+.data-entry + .data-entry {
+    margin-top: 30px;
+}
+
+input[type=text] {
+    width:  100%;
+    font-size: 20px;
+    padding: 2px;
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    font-size: 17px;
+    font-family: monospace;
+}
+
+input[type=submit] {
+    font-size: 24px;
+}

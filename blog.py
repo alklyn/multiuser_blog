@@ -11,6 +11,12 @@ from hasha2 import valid_pw
 from hasha2 import make_secure_val
 from hasha2 import check_secure_val
 from google.appengine.ext import db
+import re
+
+
+USER_RE =  re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+PASS_RE =  re.compile(r"^.{8,20}$")
+EMAIL_RE =  re.compile(r"^[\S]+@[\S]+.[\S]+$")
 
 
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
@@ -52,9 +58,32 @@ class Handler(webapp2.RequestHandler):
 
 
 class Signup(Handler):
+    """
+    Take care of user signup.
+    """
     def get(self):
         fields = {}
         self.render("signup.html", fields=fields, errors={})
+
+    def validate(self, fields):
+        """
+        Check if user input is valid
+        """
+        errors = {}
+
+        if not USER_RE.match(fields["username"]):
+            errors["username"] = "That's not a valid username."
+
+        if fields["password"] == fields["verify"]:
+            if not PASS_RE.match(fields["password"]):
+                errors["password"] = "That's not a valid password."
+        else:
+            errors["verify"] = "Your passwords didn't match."
+
+        if len(fields["email"]) > 0:
+            if not EMAIL_RE.match(fields["email"]):
+                errors["email"] = "That's not a valid email."
+        return errors
 
     def post(self):
         """POST handler"""
@@ -64,8 +93,7 @@ class Signup(Handler):
         fields["verify"] = self.request.get("verify")
         fields["email"] = self.request.get("email")
 
-        errors = validate(fields)
-        print("errors: {}".format(errors))
+        errors = self.validate(fields)
         if len(errors.keys()):
             self.render("signup.html", fields=fields, errors=errors)
         elif self.check_if_user_exists(fields["username"]):
@@ -164,9 +192,73 @@ class Welcome(Handler):
             self.redirect("/blog/signup")
 
 
+class Blog(db.Model):
+    """
+    Create entity called content.
+    Entities are googles's equivalent to tables.
+    """
+    subject = db.StringProperty(required=True)
+    content = db.TextProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
+
+
+class MainPage(Handler):
+    def render_blog(self):
+        blogs = Blog.all().order("-created")
+        self.render("blog.html", blogs=blogs)
+
+    def get(self):
+        self.render_blog()
+
+
+class NewPost(Handler):
+    """
+    Page for new posts
+    """
+    def get(self):
+        self.render("newpost.html")
+
+    def post(self):
+        subject = self.request.get("subject")
+        content = self.request.get("content")
+
+        if subject and content:
+            # Create a new content object
+            blog = Blog(subject=subject, content=content)
+            blog.put()  # Store the content object in the database
+            self.redirect("/blog/{}".format(blog.key().id()))
+        else:
+            error = "Subject and content please."
+            self.render(
+                "newpost.html",
+                error=error,
+                content=content,
+                subject=subject)
+
+
+class LastPost(Handler):
+    """Display recently created post """
+    def render_last_post(self, post_id):
+        # query = """
+        # SELECT * WHERE __key__ HAS ANCESTOR KEY(Blog, :post_id)
+        # ORDER BY created DESC;
+        # """
+        # blogs = db.GqlQuery(query, post_id=post_id)
+        # print("id = {}".format(blogs[0].key().id()))
+        blogs = [Blog.get_by_id(int(post_id))]
+
+        self.render("blog.html", blogs=blogs)
+
+    def get(self, post_id):
+        self.render_last_post(post_id)
+
+
 app = webapp2.WSGIApplication([
     ('/blog/signup', Signup),
     ('/blog/welcome', Welcome),
     ('/blog/login', Login),
-    ('/blog/logout', Logout)
+    ('/blog/logout', Logout),
+    ('/blog', MainPage),
+    ('/blog/newpost', NewPost),
+    ('/blog/(.*)', LastPost)
 ], debug=True)

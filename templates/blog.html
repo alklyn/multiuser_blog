@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %} blog {% endblock %}
+
+{% block style %}
+    {{ super() }}
+    <link type="text/css" rel="stylesheet" href="../static/styles/blog.css">
+{% endblock %}
+
+{% block header %}
+    <h1> Blog </h1>
+{% endblock %}
+
+{% block content %}
+        {% for blog in blogs %}
+            <div class="row post-header">
+                <div class="col-md-4 post-subject">
+                    {{ blog.subject }}
+                </div>
+                <div class="col-md-8 created">
+                    {{ blog.created.strftime('%Y-%m-%d %H:%M') }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 content">
+                    <pre class="post-content">{{ blog.content }}</pre>
+                    <!--The pre tag preserves whitespaces.
+                       The HTML <pre> element (or HTML Preformatted Text)
+                       represents preformatted text. Text within this
+                       element is typically displayed in a non-proportional
+                       ("monospace") font exactly as it is laid out in the
+                       file. Whitespace inside this element is displayed as
+                       typed.-->
+                </div>
+            </div>
+        {% endfor %}
+
+{% endblock %}
