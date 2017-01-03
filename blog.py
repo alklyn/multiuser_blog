@@ -1,5 +1,5 @@
 """
-signup page
+Simple blog app.
 """
 import os
 import jinja2
@@ -65,6 +65,23 @@ class Handler(webapp2.RequestHandler):
             "Set-Cookie",
             "userid={};Path=/".format(new_cookie_val))
         self.redirect("/blog/welcome")
+
+    def is_logged_in(self, requested_page, **params):
+        """
+        Check whether the user is logged in. If the user is logged in serve
+        them the requested page
+        """
+        user_cookie_val = self.request.cookies.get("userid")
+        id_str = check_secure_val(user_cookie_val, SECRET)
+
+        if id_str:
+            user = User.get_by_id(int(id_str))
+            params["username"] = user.username
+            self.render(
+            "{}.html".format(requested_page),
+            params=params)
+        else:
+            self.redirect("/blog/signup")
 
 
 class Signup(Handler):
@@ -184,13 +201,7 @@ class Logout(Handler):
 
 class Welcome(Handler):
     def get(self):
-        user_cookie_val = self.request.cookies.get("userid")
-        id_str = check_secure_val(user_cookie_val, SECRET)
-        if id_str:
-            user = User.get_by_id(int(id_str))
-            self.render("welcome.html", username=user.username)
-        else:
-            self.redirect("/blog/signup")
+        self.is_logged_in("welcome")
 
 
 class Blog(db.Model):
@@ -206,7 +217,7 @@ class Blog(db.Model):
 class MainPage(Handler):
     def render_blog(self):
         blogs = Blog.all().order("-created")
-        self.render("blog.html", blogs=blogs)
+        self.is_logged_in("blog", blogs=blogs)
 
     def get(self):
         self.render_blog()
@@ -217,7 +228,7 @@ class NewPost(Handler):
     Page for new posts
     """
     def get(self):
-        self.render("newpost.html")
+        self.is_logged_in("newpost")
 
     def post(self):
         subject = self.request.get("subject")
@@ -260,6 +271,7 @@ app = webapp2.WSGIApplication([
     ('/blog/login', Login),
     ('/blog/logout', Logout),
     ('/blog', MainPage),
+    ('/blog/', MainPage),
     ('/blog/newpost', NewPost),
     ('/blog/(.*)', LastPost)
 ], debug=True)

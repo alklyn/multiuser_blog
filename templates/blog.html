@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-        {% for blog in blogs %}
+        {% for blog in params["blogs"] %}
             <div class="row post-header">
                 <div class="col-md-4 post-subject">
                     {{ blog.subject }}
