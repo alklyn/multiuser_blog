@@ -258,8 +258,9 @@ class LastPost(Handler):
         # blogs = db.GqlQuery(query, post_id=post_id)
         # print("id = {}".format(blogs[0].key().id()))
         blogs = [Blog.get_by_id(int(post_id))]
-
-        self.render("blog.html", blogs=blogs)
+        params = dict()
+        params["blogs"] = blogs
+        self.render("blog.html", params=params)
 
     def get(self, post_id):
         self.render_last_post(post_id)
