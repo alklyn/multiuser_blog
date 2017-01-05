@@ -1,17 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta charset="utf-8">
+    <title>
     {% block title %}
+        {% if title %}
+            {{ title }} - CFM
+        {% else %}
+            CFM
+        {% endif %}
     {% endblock %}
-    {% block style %}
+    </title>
+
+    <link type="text/css" rel="stylesheet" href="../static/bootstrap/css/bootstrap.css">
+    {% block styles %}
+        <link type="text/css" rel="stylesheet" href="../static/styles/base.css">
+    {% endblock %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="../static/bootstrap/js/bootstrap.js">
+    {% block my_js %}
+        <!-- Your js here -->
     {% endblock %}
 </head>
+
 <body>
-    {% block header %}
-    {% endblock %}
-    {% block content %}
-    {% endblock %}
+    <div class="container-flex">
+        {% block header %}
+        {% endblock %}
+        {% block content %}
+        <div class="container">
+        {% block my_content%}
+        {% endblock %}
+        </div>
+        {% endblock %}
+    </div>
 </body>
 </html>
