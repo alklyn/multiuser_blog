@@ -18,7 +18,7 @@
 {% block content %}
         {% for blog in params["blogs"] %}
         <div class="row">
-            <div class="col-md-4 col-md-offset-4 panel panel-default">
+            <div class="col-md-4 col-md-offset-4 panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">{{ blog.subject }} {{ blog.created.strftime('%Y-%m-%d %H:%M') }}</h3>
                 </div>
