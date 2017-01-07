@@ -66,23 +66,28 @@ class Handler(webapp2.RequestHandler):
             "userid={};Path=/".format(new_cookie_val))
         self.redirect("/blog/welcome")
 
+    def get_user_from_cookie(self):
+        """
+        Get user details based on user cookie.
+        """
+        user_cookie_val = self.request.cookies.get("userid")
+        id_str = check_secure_val(user_cookie_val, SECRET)
+        if id_str:
+            user = User.get_by_id(int(id_str))
+            return user
+
     def is_logged_in(self, requested_page, **params):
         """
         Check whether the user is logged in. If the user is logged in serve
         them the requested page otherwise redirect to signup page.
         """
-        user_cookie_val = self.request.cookies.get("userid")
-        id_str = check_secure_val(user_cookie_val, SECRET)
+        user = self.get_user_from_cookie()
 
-        if id_str:
-            user = User.get_by_id(int(id_str))
-            if user is not None:
-                params["username"] = user.username
-                self.render(
-                "{}.html".format(requested_page),
-                params=params)
-            else:
-                self.redirect("/blog/signup")
+        if user:
+            params["username"] = user.username
+            self.render(
+            "{}.html".format(requested_page),
+            params=params)
         else:
             self.redirect("/blog/signup")
 
@@ -212,15 +217,16 @@ class Blog(db.Model):
     Create entity called content.
     Entities are googles's equivalent to tables.
     """
+    posted_by = db.IntegerProperty(required=True)
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
 
 
-class MainPage(Handler):
+class BlogPage(Handler):
     def render_blog(self):
-        blogs = Blog.all().order("-created")
-        self.is_logged_in("blog", blogs=blogs)
+        blog_posts = Blog.all().order("-created")
+        self.is_logged_in("blog", blog_posts=blog_posts)
 
     def get(self):
         self.render_blog()
@@ -234,12 +240,22 @@ class NewPost(Handler):
         self.is_logged_in("newpost")
 
     def post(self):
+        """
+        Handle post requests
+        """
+        user = self.get_user_from_cookie()
+        if not user:
+            self.redirect("/blog/signup")
+
         subject = self.request.get("subject")
         content = self.request.get("content")
 
         if subject and content:
             # Create a new content object
-            blog = Blog(subject=subject, content=content)
+            blog = Blog(
+                subject=subject,
+                content=content,
+                posted_by=user.key().id())
             blog.put()  # Store the content object in the database
             self.redirect("/blog/{}".format(blog.key().id()))
         else:
@@ -258,11 +274,11 @@ class LastPost(Handler):
         # SELECT * WHERE __key__ HAS ANCESTOR KEY(Blog, :post_id)
         # ORDER BY created DESC;
         # """
-        # blogs = db.GqlQuery(query, post_id=post_id)
-        # print("id = {}".format(blogs[0].key().id()))
-        blogs = [Blog.get_by_id(int(post_id))]
+        # blog_posts = db.GqlQuery(query, post_id=post_id)
+        # print("id = {}".format(blog_posts[0].key().id()))
+        blog_posts = [Blog.get_by_id(int(post_id))]
         params = dict()
-        params["blogs"] = blogs
+        params["blog_posts"] = blog_posts
         self.render("blog.html", params=params)
 
     def get(self, post_id):
@@ -274,8 +290,8 @@ app = webapp2.WSGIApplication([
     ('/blog/welcome', Welcome),
     ('/blog/login', Login),
     ('/blog/logout', Logout),
-    ('/blog', MainPage),
-    ('/blog/', MainPage),
+    ('/blog', BlogPage),
+    ('/blog/', BlogPage),
     ('/blog/newpost', NewPost),
     ('/blog/(.*)', LastPost)
 ], debug=True)

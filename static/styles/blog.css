@@ -19,4 +19,11 @@
 pre {
     white-space: pre-wrap;
     word-break: keep-all;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.post-content {
+    max-width: 100%;
+    overflow-x: hidden;
 }
