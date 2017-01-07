@@ -69,17 +69,20 @@ class Handler(webapp2.RequestHandler):
     def is_logged_in(self, requested_page, **params):
         """
         Check whether the user is logged in. If the user is logged in serve
-        them the requested page
+        them the requested page otherwise redirect to signup page.
         """
         user_cookie_val = self.request.cookies.get("userid")
         id_str = check_secure_val(user_cookie_val, SECRET)
 
         if id_str:
             user = User.get_by_id(int(id_str))
-            params["username"] = user.username
-            self.render(
-            "{}.html".format(requested_page),
-            params=params)
+            if user is not None:
+                params["username"] = user.username
+                self.render(
+                "{}.html".format(requested_page),
+                params=params)
+            else:
+                self.redirect("/blog/signup")
         else:
             self.redirect("/blog/signup")
 
