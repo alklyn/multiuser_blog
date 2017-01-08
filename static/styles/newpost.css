@@ -9,7 +9,7 @@ label {
 }
 
 input[type=text] {
-    width:  100%;
+    width: 100%;
     font-size: 20px;
     padding: 2px;
 }
@@ -23,4 +23,8 @@ textarea {
 
 input[type=submit] {
     font-size: 24px;
+}
+
+.panel {
+    max-width: 600px;
 }

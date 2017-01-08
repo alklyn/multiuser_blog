@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %} blog {% endblock %}
+{% block title %}
+    {{ super() }}
+{% endblock %}
 
-{% block style %}
+{% block styles %}
     {{ super() }}
     <link type="text/css" rel="stylesheet" href="../static/styles/blog.css">
 {% endblock %}
+
 
 {% block header %}
     <div class="row">
@@ -27,8 +30,8 @@
                 <div class="panel-body post-content">
                     <pre>{{ blog_post.content }}</pre>
                 </div>
-                <div class="panel-footer">
-                    <h3>{{ blog_post.created.strftime('%Y-%m-%d %H:%M') }}</h3>
+                <div class="panel-footer footer">
+                    {{ blog_post.created.strftime('%Y-%m-%d %H:%M') }}
                 </div>
             </div>
         </div>

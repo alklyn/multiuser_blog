@@ -8,16 +8,16 @@
     <title>
     {% block title %}
         {% if title %}
-            {{ title }} - CFM
+            {{ title }}
         {% else %}
-            CFM
+            Blog
         {% endif %}
     {% endblock %}
     </title>
 
     <link type="text/css" rel="stylesheet" href="../static/bootstrap/css/bootstrap.css">
     {% block styles %}
-        <link type="text/css" rel="stylesheet" href="../static/styles/base.css">
+    <link type="text/css" rel="stylesheet" href="../static/styles/base.css">
     {% endblock %}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -32,7 +32,7 @@
         {% block header %}
         {% endblock %}
         {% block content %}
-        <div class="container">
+        <div class="container-flex">
         {% block my_content%}
         {% endblock %}
         </div>
