@@ -214,13 +214,18 @@ class Welcome(Handler):
 
 class Blog(db.Model):
     """
-    Create entity called content.
-    Entities are googles's equivalent to tables.
+    Create entity called blog.
     """
     posted_by = db.IntegerProperty(required=True)
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
+
+    def get_poster(self):
+        """
+        Get the username of the user that created post.
+        """
+        return User.get_by_id(self.posted_by).username
 
 
 class BlogPage(Handler):

@@ -33,7 +33,7 @@
                     <pre>{{ blog_post.content }}</pre>
                 </div>
                 <div class="panel-footer footer">
-                    {{ blog_post.created.strftime('%Y-%m-%d %H:%M') }}
+                    {{ blog_post.get_poster() }} {{ blog_post.created.strftime('%Y-%m-%d %H:%M') }}
                 </div>
             </div>
         </div>
