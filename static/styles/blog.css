@@ -27,3 +27,13 @@ pre {
     max-width: 100%;
     overflow-x: hidden;
 }
+
+.footer {
+    display: flex;
+}
+
+.posted-by, .created {
+    margin-right: 10px;
+    font-size: 0.8em;
+    font-style: italic;
+}
