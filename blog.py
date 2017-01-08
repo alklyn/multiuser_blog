@@ -237,16 +237,19 @@ class BlogPage(Handler):
         self.render_blog()
 
 
-class NewPost(Handler):
+class PostHandler(Handler):
     """
-    Page for new posts
+    Base class for creating or editing posts.
     """
-    def get(self):
-        self.is_logged_in("newpost")
-
-    def post(self):
+    def get(self, action="newpost"):
         """
-        Handle post requests
+        Handle GET requests
+        """
+        self.is_logged_in(action)
+
+    def post(self, action="newpost"):
+        """
+        Handle POST requests.
         """
         user = self.get_user_from_cookie()
         if not user:
@@ -266,10 +269,32 @@ class NewPost(Handler):
         else:
             error = "Subject and content please."
             self.render(
-                "newpost.html",
+                "{}.html".format(action),
                 error=error,
                 content=content,
                 subject=subject)
+
+
+class NewPost(PostHandler):
+    """
+    Handler for newpost page.
+    """
+    def get(self):
+        super(NewPost, self).get("newpost")
+
+    def post(self):
+        super(NewPost, self).post("newpost")
+
+
+class UpdatePost(PostHandler):
+    """
+    Handler for updatepost page.
+    """
+    def get(self):
+        super(UpdatePost, self).get("updatepost")
+
+    def post(self):
+        super(UpdatePost, self).post("updatepost")
 
 
 class LastPost(Handler):
@@ -298,5 +323,6 @@ app = webapp2.WSGIApplication([
     ('/blog', BlogPage),
     ('/blog/', BlogPage),
     ('/blog/newpost', NewPost),
+    ('/blog/updatepost', UpdatePost),
     ('/blog/(.*)', LastPost)
 ], debug=True)
