@@ -241,13 +241,13 @@ class PostHandler(Handler):
     """
     Base class for creating or editing posts.
     """
-    def get(self, action="newpost"):
+    def get(self, page="newpost", title=""):
         """
         Handle GET requests
         """
-        self.is_logged_in(action)
+        self.is_logged_in(page, title=title)
 
-    def post(self, action="newpost"):
+    def post(self, page="newpost", title=""):
         """
         Handle POST requests.
         """
@@ -269,7 +269,7 @@ class PostHandler(Handler):
         else:
             error = "Subject and content please."
             self.render(
-                "{}.html".format(action),
+                "{}.html".format(page),
                 error=error,
                 content=content,
                 subject=subject)
@@ -280,10 +280,10 @@ class NewPost(PostHandler):
     Handler for newpost page.
     """
     def get(self):
-        super(NewPost, self).get("newpost")
+        super(NewPost, self).get(page="newpost", title="New Post")
 
     def post(self):
-        super(NewPost, self).post("newpost")
+        super(NewPost, self).post(page="newpost", title="New Post")
 
 
 class UpdatePost(PostHandler):
