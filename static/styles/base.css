@@ -24,3 +24,11 @@
 form {
     display: block;
 }
+
+.vertical-fix {
+    margin-top: 20vh;
+}
+
+.width-fix {
+    max-width: 98%;
+}
