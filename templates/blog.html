@@ -39,6 +39,16 @@
                     <div class="created">
                         At {{ blog_post.created.strftime('%Y-%m-%d %H:%M') }}
                     </div>
+                    {% if params["show_edit"] %}
+                    <form class="flexx" method="post">
+                        <div class="edit">
+                            <button name="edit"> Edit </button>
+                        </div>
+                        <div class="edit">
+                            <button name="delete"> Delete </button>
+                        </div>
+                    </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

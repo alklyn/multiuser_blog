@@ -231,13 +231,23 @@ class Blog(db.Model):
 class BlogPage(Handler):
     def render_blog(self):
         blog_posts = Blog.all().order("-created")
-        self.is_logged_in("blog", blog_posts=blog_posts)
+        self.is_logged_in("blog", blog_posts=blog_posts, show_edit=False)
 
     def get(self):
         self.render_blog()
 
+    def post(self):
+        """
+        Handle post requests
+        """
+        user = self.get_user_from_cookie()
+        if not user:
+            self.redirect("/blog/signup")
 
-class PostHandler(Handler):
+        # if user.key().id() =
+
+
+class BlogPost(Handler):
     """
     Base class for creating or editing posts.
     """
@@ -275,7 +285,7 @@ class PostHandler(Handler):
                 subject=subject)
 
 
-class NewPost(PostHandler):
+class NewPost(BlogPost):
     """
     Handler for newpost page.
     """
@@ -286,7 +296,7 @@ class NewPost(PostHandler):
         super(NewPost, self).post(page="newpost", title="New Post")
 
 
-class UpdatePost(PostHandler):
+class UpdatePost(BlogPost):
     """
     Handler for updatepost page.
     """
@@ -297,22 +307,20 @@ class UpdatePost(PostHandler):
         super(UpdatePost, self).post("updatepost")
 
 
-class LastPost(Handler):
-    """Display recently created post """
-    def render_last_post(self, post_id):
-        # query = """
-        # SELECT * WHERE __key__ HAS ANCESTOR KEY(Blog, :post_id)
-        # ORDER BY created DESC;
-        # """
-        # blog_posts = db.GqlQuery(query, post_id=post_id)
-        # print("id = {}".format(blog_posts[0].key().id()))
+class SelectedPost(Handler):
+    """Display selected post or display latest post."""
+    def render_selected_post(self, post_id):
         blog_posts = [Blog.get_by_id(int(post_id))]
         params = dict()
         params["blog_posts"] = blog_posts
+        params["show_edit"] = True
         self.render("blog.html", params=params)
 
     def get(self, post_id):
-        self.render_last_post(post_id)
+        user = self.get_user_from_cookie()
+        if not user:
+            self.redirect("/blog/signup")
+        self.render_selected_post(post_id)
 
 
 app = webapp2.WSGIApplication([
@@ -324,5 +332,5 @@ app = webapp2.WSGIApplication([
     ('/blog/', BlogPage),
     ('/blog/newpost', NewPost),
     ('/blog/updatepost', UpdatePost),
-    ('/blog/(.*)', LastPost)
+    ('/blog/(.*)', SelectedPost)
 ], debug=True)

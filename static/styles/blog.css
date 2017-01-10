@@ -28,7 +28,7 @@ pre {
     overflow-x: hidden;
 }
 
-.footer {
+.footer, .flexx {
     display: flex;
 }
 
@@ -36,4 +36,12 @@ pre {
     margin-right: 10px;
     font-size: 0.8em;
     font-style: italic;
+}
+
+.flexx {
+    float: right;
+}
+
+.edit {
+    margin-left: 20px;
 }
