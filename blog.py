@@ -236,16 +236,6 @@ class BlogPage(Handler):
     def get(self):
         self.render_blog()
 
-    def post(self):
-        """
-        Handle post requests
-        """
-        user = self.get_user_from_cookie()
-        if not user:
-            self.redirect("/blog/signup")
-
-        # if user.key().id() =
-
 
 class BlogPost(Handler):
     """
@@ -321,6 +311,16 @@ class SelectedPost(Handler):
         if not user:
             self.redirect("/blog/signup")
         self.render_selected_post(post_id)
+
+    def post(self):
+        """
+        Handle post requests
+        """
+        user = self.get_user_from_cookie()
+        if not user:
+            self.redirect("/blog/signup")
+
+        # if user.key().id() =
 
 
 app = webapp2.WSGIApplication([
