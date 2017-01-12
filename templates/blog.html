@@ -41,6 +41,7 @@
                     </div>
                     {% if params["show_edit"] %}
                     <form class="flexx" method="post">
+                        <input type="hidden" name="post_id" value="{{ blog_post.key().id() }}">
                         <div class="edit">
                             <button name="edit"> Edit </button>
                         </div>
@@ -48,6 +49,11 @@
                             <button name="delete"> Delete </button>
                         </div>
                     </form>
+                    {% endif %}
+                    {% if params["error"] %}
+                    <div class="error">
+                        You can only update or delete your own post.
+                    </div>
                     {% endif %}
                 </div>
             </div>
