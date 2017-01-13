@@ -291,10 +291,12 @@ class UpdatePost(BlogPost):
     Handler for updatepost page.
     """
     def get(self):
-        super(UpdatePost, self).get("updatepost")
+        print("In get handler")
+        super(UpdatePost, self).get(page="updatepost", title="Update Post")
 
     def post(self):
-        super(UpdatePost, self).post("updatepost")
+        print("In post handler")
+        super(UpdatePost, self).post(page="updatepost", title="Update Post")
 
 
 class SelectedPost(Handler):
