@@ -312,7 +312,7 @@ class SelectedPost(Handler):
             self.redirect("/blog/signup")
         self.render_selected_post(post_id)
 
-    def post(self, **kw):
+    def post(self, post_id):
         """
         Handle post requests
         """
@@ -320,13 +320,11 @@ class SelectedPost(Handler):
         if not user:
             self.redirect("/blog/signup")
 
-        post_id = self.request.get("post_id")
         blog_post = Blog.get_by_id(int(post_id))
         blog_posts = [blog_post]
         if user.key().id() == blog_post.posted_by:
             self.render(
                 "updatepost.html",
-                error=error,
                 blog_posts=blog_posts)
 
 
