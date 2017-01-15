@@ -25,8 +25,8 @@
                                             subject
                                         </div>
                                         <div>
-                                            {% if blog_post %}
-                                            <input type="text" name="subject" value="{{ blog_post.subject }}">
+                                            {% if params["blog_post"] %}
+                                            <input type="text" name="subject" value="{{ params["blog_post"].subject }}">
                                             {% else %}
                                             <input type="text" name="subject" value="{{ subject }}">
                                             {% endif %}
@@ -39,8 +39,8 @@
                                             Blog
                                         </div>
                                         <div>
-                                            {% if blog_post %}
-                                            <textarea name="content">{{ blog_post.content }}</textarea>
+                                            {% if params["blog_post"] %}
+                                            <textarea name="content">{{ params["blog_post"].content }}</textarea>
                                             {% else %}
                                             <textarea name="content">{{ content }}</textarea>
                                             {% endif %}

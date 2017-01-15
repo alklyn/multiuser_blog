@@ -76,6 +76,16 @@ class Handler(webapp2.RequestHandler):
             user = User.get_by_id(int(id_str))
             return user
 
+    def get_post_from_cookie(self):
+        """
+        Get blog post from post_id cookie.
+        """
+        post_cookie_val = self.request.cookies.get("post_id")
+        id_str = check_secure_val(post_cookie_val, SECRET)
+        if id_str:
+            blog_post = Blog.get_by_id(int(id_str))
+            return blog_post
+
     def is_logged_in(self, requested_page, **params):
         """
         Check whether the user is logged in. If the user is logged in serve
@@ -229,6 +239,9 @@ class Blog(db.Model):
 
 
 class BlogPage(Handler):
+    """
+    Page for displaying posts.
+    """
     def render_blog(self):
         blog_posts = Blog.all().order("-created")
         self.is_logged_in("blog", blog_posts=blog_posts, show_edit=False)
@@ -241,13 +254,18 @@ class BlogPost(Handler):
     """
     Base class for creating or editing posts.
     """
-    def get(self, blog=None):
+    def get(self, page="newpost", edit_mode=False):
         """
         Handle GET requests
         """
-        self.is_logged_in(page, blog=blog)
+        if edit_mode:
+            blog_post = self.get_post_from_cookie()
+        else:
+            blog_post = None
 
-    def post(self):
+        self.is_logged_in(page, blog_post=blog_post)
+
+    def post(self, edit_mode=False):
         """
         Handle POST requests.
         """
@@ -260,10 +278,16 @@ class BlogPost(Handler):
 
         if subject and content:
             # Create a new Blog object
-            blog = Blog(
-                subject=subject,
-                content=content,
-                posted_by=user.key().id())
+            if edit_mode:
+                blog = self.get_post_from_cookie()
+                blog.subject = subject
+                blog.content = content
+            else:
+                blog = Blog(
+                    subject=subject,
+                    content=content,
+                    posted_by=user.key().id())
+
             blog.put()  # Store the content object in the database
             self.redirect("/blog/{}".format(blog.key().id()))
         else:
@@ -291,24 +315,10 @@ class UpdatePost(BlogPost):
     Handler for updatepost page.
     """
     def get(self):
-        print("In get handler")
-        super(UpdatePost, self).get(blog=blog)
+        super(UpdatePost, self).get(page="updatepost", edit_mode=True)
 
     def post(self):
-        """
-        Handle post requests
-        """
-        user = self.get_user_from_cookie()
-        if not user:
-            self.redirect("/blog/signup")
-
-        blog_post = Blog.get_by_id(int(post_id))
-        blog_posts = [blog_post]
-        if user.key().id() == blog_post.posted_by:
-            self.render(
-                "updatepost.html",
-                blog_posts=blog_posts)
-        super(UpdatePost, self).post(blog=blog)
+        super(UpdatePost, self).post(edit_mode=True)
 
 
 class SelectedPost(Handler):
@@ -337,10 +347,18 @@ class SelectedPost(Handler):
 
         blog_post = Blog.get_by_id(int(post_id))
         if user.key().id() == blog_post.posted_by:
-            self.render(
-                "updatepost.html",
-                blog_post=blog_post)
+            self.set_post_cookie(post_id)
+            self.redirect("/blog/updatepost")
 
+
+    def set_post_cookie(self, post_id):
+        """
+        Create cookie containing the id of the post to be edited.
+        """
+        new_cookie_val = make_secure_val(str(post_id), SECRET)
+        self.response.headers.add_header(
+            "Set-Cookie",
+            "post_id={};Path=/".format(new_cookie_val))
 
 app = webapp2.WSGIApplication([
     ('/blog/signup', Signup),
