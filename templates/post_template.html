@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} {{ params["title"] }} {% endblock %}
+{% block title %}  {% endblock %}
 
 {% block styles %}
     {{ super() }}
@@ -13,7 +13,8 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h1>
-                                {{ params["title"] }}
+                                {% block header %}
+                                {% endblock %}
                             </h1>
                         </div>
                         <div class="panel-body">
