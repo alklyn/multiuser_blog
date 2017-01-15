@@ -241,13 +241,13 @@ class BlogPost(Handler):
     """
     Base class for creating or editing posts.
     """
-    def get(self, page="newpost", title=""):
+    def get(self, blog=None):
         """
         Handle GET requests
         """
-        self.is_logged_in(page, title=title)
+        self.is_logged_in(page, blog=blog)
 
-    def post(self, page="newpost", title=""):
+    def post(self):
         """
         Handle POST requests.
         """
@@ -259,7 +259,7 @@ class BlogPost(Handler):
         content = self.request.get("content")
 
         if subject and content:
-            # Create a new content object
+            # Create a new Blog object
             blog = Blog(
                 subject=subject,
                 content=content,
@@ -280,10 +280,10 @@ class NewPost(BlogPost):
     Handler for newpost page.
     """
     def get(self):
-        super(NewPost, self).get(page="newpost", title="New Post")
+        super(NewPost, self).get()
 
     def post(self):
-        super(NewPost, self).post(page="newpost", title="New Post")
+        super(NewPost, self).post()
 
 
 class UpdatePost(BlogPost):
@@ -292,11 +292,23 @@ class UpdatePost(BlogPost):
     """
     def get(self):
         print("In get handler")
-        super(UpdatePost, self).get(page="updatepost", title="Update Post")
+        super(UpdatePost, self).get(blog=blog)
 
     def post(self):
-        print("In post handler")
-        super(UpdatePost, self).post(page="updatepost", title="Update Post")
+        """
+        Handle post requests
+        """
+        user = self.get_user_from_cookie()
+        if not user:
+            self.redirect("/blog/signup")
+
+        blog_post = Blog.get_by_id(int(post_id))
+        blog_posts = [blog_post]
+        if user.key().id() == blog_post.posted_by:
+            self.render(
+                "updatepost.html",
+                blog_posts=blog_posts)
+        super(UpdatePost, self).post(blog=blog)
 
 
 class SelectedPost(Handler):
@@ -318,16 +330,16 @@ class SelectedPost(Handler):
         """
         Handle post requests
         """
+        print("post_id = {}".format(post_id))
         user = self.get_user_from_cookie()
         if not user:
             self.redirect("/blog/signup")
 
         blog_post = Blog.get_by_id(int(post_id))
-        blog_posts = [blog_post]
         if user.key().id() == blog_post.posted_by:
             self.render(
                 "updatepost.html",
-                blog_posts=blog_posts)
+                blog_post=blog_post)
 
 
 app = webapp2.WSGIApplication([
