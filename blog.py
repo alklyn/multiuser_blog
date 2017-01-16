@@ -273,30 +273,33 @@ class BlogPost(Handler):
         if not user:
             self.redirect("/blog/signup")
 
-        subject = self.request.get("subject")
-        content = self.request.get("content")
+        print("Choice = {}".format(self.request.get("choice")))
+        if self.request.get("choice") == "submit":
+            subject = self.request.get("subject")
+            content = self.request.get("content")
 
-        if subject and content:
-            # Create a new Blog object
-            if edit_mode:
-                blog = self.get_post_from_cookie()
-                blog.subject = subject
-                blog.content = content
+            if subject and content:
+                # Create a new Blog object
+                if edit_mode:
+                    blog = self.get_post_from_cookie()
+                    blog.subject = subject
+                    blog.content = content
+                else:
+                    blog = Blog(
+                        subject=subject,
+                        content=content,
+                        posted_by=user.key().id())
+
+                blog.put()  # Store the content object in the database
+                self.redirect("/blog/{}".format(blog.key().id()))
             else:
-                blog = Blog(
-                    subject=subject,
+                error = "Subject and content please."
+                self.render(
+                    "{}.html".format(page),
+                    error=error,
                     content=content,
-                    posted_by=user.key().id())
+                    subject=subject)
 
-            blog.put()  # Store the content object in the database
-            self.redirect("/blog/{}".format(blog.key().id()))
-        else:
-            error = "Subject and content please."
-            self.render(
-                "{}.html".format(page),
-                error=error,
-                content=content,
-                subject=subject)
 
 
 class NewPost(BlogPost):

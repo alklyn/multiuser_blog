@@ -26,3 +26,7 @@ textarea {
 .panel {
     max-width: 600px;
 }
+
+button + button {
+    margin-left: 20px;
+}
