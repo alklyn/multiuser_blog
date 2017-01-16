@@ -6,13 +6,9 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta charset="utf-8">
     <title>
-    {% block title %}
-        {% if title %}
-            {{ title }}
-        {% else %}
-            Blog
-        {% endif %}
-    {% endblock %}
+        {% block title %}
+        Blog
+        {% endblock %}
     </title>
 
     <link type="text/css" rel="stylesheet" href="../static/bootstrap/css/bootstrap.css">
@@ -30,10 +26,6 @@
 <body>
     <div class="container-flex">
         {% block content %}
-        <div class="container-flex">
-        {% block my_content%}
-        {% endblock %}
-        </div>
         {% endblock %}
     </div>
 </body>
