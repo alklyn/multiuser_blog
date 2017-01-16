@@ -323,9 +323,8 @@ class UpdatePost(BlogPost):
 
 class SelectedPost(Handler):
     """Display selected post or display latest post."""
-    def render_selected_post(self, post_id):
+    def render_selected_post(self, post_id, **params):
         blog_posts = [Blog.get_by_id(int(post_id))]
-        params = dict()
         params["blog_posts"] = blog_posts
         params["show_edit"] = True
         self.render("blog.html", params=params)
@@ -340,15 +339,19 @@ class SelectedPost(Handler):
         """
         Handle post requests
         """
-        print("post_id = {}".format(post_id))
         user = self.get_user_from_cookie()
         if not user:
-            self.redirect("/blog/signup")
+            self.redirect("/blog/login")
 
         blog_post = Blog.get_by_id(int(post_id))
+
+        # Check if user is the author of the post.
         if user.key().id() == blog_post.posted_by:
             self.set_post_cookie(post_id)
             self.redirect("/blog/updatepost")
+        else:
+            self.render_selected_post(post_id, invalid_edit=True)
+
 
 
     def set_post_cookie(self, post_id):

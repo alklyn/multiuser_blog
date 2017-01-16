@@ -51,12 +51,12 @@
                         </div>
                     </form>
                     {% endif %}
-                    {% if params["error"] %}
-                    <div class="error">
-                        You can only update or delete your own post.
-                    </div>
-                    {% endif %}
                 </div>
+                {% if params["invalid_edit"] %}
+                <div class="panel panel-danger error">
+                    You can only update or delete your own post.
+                </div>
+                {% endif %}
             </div>
         </div>
         {% else %}
