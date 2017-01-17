@@ -350,8 +350,14 @@ class SelectedPost(Handler):
 
         # Check if user is the author of the post.
         if user.key().id() == blog_post.posted_by:
-            self.set_post_cookie(post_id)
-            self.redirect("/blog/updatepost")
+
+            if self.request.get("choice") == "delete":
+                db.delete(blog_post)
+                self.redirect("/blog/")
+            else:
+                # Create cookie to keep track of the post we are editing
+                self.set_post_cookie(post_id)
+                self.redirect("/blog/updatepost")
         else:
             self.render_selected_post(post_id, invalid_edit=True)
 
