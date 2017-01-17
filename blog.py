@@ -95,11 +95,14 @@ class Handler(webapp2.RequestHandler):
 
         if user:
             params["username"] = user.username
-            self.render(
-            "{}.html".format(requested_page),
-            params=params)
+            go_to_requested_page(requested_page, **params)
         else:
             self.redirect("/blog/signup")
+
+    def go_to_requested_page(self, requested_page, **params):
+        self.render(
+        "{}.html".format(requested_page),
+        params=params)
 
 
 class Signup(Handler):
@@ -295,7 +298,7 @@ class BlogPost(Handler):
             else:
                 error = "Subject and content please."
                 self.render(
-                    "{}.html".format(page),
+                    "newpost.html",
                     error=error,
                     content=content,
                     subject=subject)
@@ -327,10 +330,14 @@ class UpdatePost(BlogPost):
 class SelectedPost(Handler):
     """Display selected post or display latest post."""
     def render_selected_post(self, post_id, **params):
-        blog_posts = [Blog.get_by_id(int(post_id))]
-        params["blog_posts"] = blog_posts
+        if Blog.get_by_id(int(post_id)):
+            params["blog_posts"] = [Blog.get_by_id(int(post_id))]
+        else:
+            params["blog_posts"] = list()
+
         params["show_edit"] = True
-        self.render("blog.html", params=params)
+        requested_page = "blog.html"
+        self.go_to_requested_page(requested_page, **params)
 
     def get(self, post_id):
         user = self.get_user_from_cookie()
@@ -381,5 +388,5 @@ app = webapp2.WSGIApplication([
     ('/blog/', BlogPage),
     ('/blog/newpost', NewPost),
     ('/blog/updatepost', UpdatePost),
-    ('/blog/(.*)', SelectedPost)
+    ('/blog/([\d]*)', SelectedPost)
 ], debug=True)
