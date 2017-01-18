@@ -15,6 +15,7 @@ import re
 USER_RE =  re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASS_RE =  re.compile(r"^.{8,20}$")
 EMAIL_RE =  re.compile(r"^[\S]+@[\S]+.[\S]+$")
+BLOG_NAME = "Some Random Blog"
 
 
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
@@ -256,32 +257,39 @@ class BlogPage(Handler):
     def render_blog(self):
         blog_posts = Blog.all().order("-created")
         user = self.get_user_from_cookie()
+
         if not user:
             self.redirect("/blog/signup")
         else:
             params = {
-                "header": "Some Random Blog",
+                "header": BLOG_NAME,
                 "blog_posts": blog_posts,
                 "show_edit": False}
             self.go_to_requested_page("blog.html", **params)
+
     def get(self):
         self.render_blog()
 
 
-class BlogPost(Handler):
+class CreateOrEditPost(Handler):
     """
     Base class for creating or editing posts.
     """
-    def get(self, page="newpost", edit_mode=False):
+    def get(self, page, **params):
         """
         Handle GET requests
         """
-        if edit_mode:
+        if params["edit_mode"]:
             blog_post = self.get_post_from_cookie()
         else:
             blog_post = None
 
-        self.is_logged_in(page, blog_post=blog_post)
+        user = self.get_user_from_cookie()
+        if not user:
+            self.redirect("/blog/signup")
+        else:
+            params["blog_post"] = blog_post
+            self.go_to_requested_page(page, **params)
 
     def post(self, edit_mode=False):
         """
@@ -320,23 +328,31 @@ class BlogPost(Handler):
 
 
 
-class NewPost(BlogPost):
+class NewPost(CreateOrEditPost):
     """
     Handler for newpost page.
     """
     def get(self):
-        super(NewPost, self).get()
+        super(NewPost, self).get(
+                                "newpost.html",
+                                title="New Post",
+                                header="New Post",
+                                edit_mode=False)
 
     def post(self):
         super(NewPost, self).post()
 
 
-class UpdatePost(BlogPost):
+class UpdatePost(CreateOrEditPost):
     """
     Handler for updatepost page.
     """
     def get(self):
-        super(UpdatePost, self).get(page="updatepost", edit_mode=True)
+        super(NewPost, self).get(
+                                "updatepost.html",
+                                title="Update Post",
+                                header="Update Post",
+                                edit_mode=True)
 
     def post(self):
         super(UpdatePost, self).post(edit_mode=True)
@@ -351,7 +367,8 @@ class SelectedPost(Handler):
             params["blog_posts"] = list()
 
         params["show_edit"] = True
-        requested_page = "blog"
+        params["header"] = BLOG_NAME
+        requested_page = "blog.html"
         self.go_to_requested_page(requested_page, **params)
 
     def get(self, post_id):
