@@ -255,8 +255,15 @@ class BlogPage(Handler):
     """
     def render_blog(self):
         blog_posts = Blog.all().order("-created")
-        self.is_logged_in("blog", blog_posts=blog_posts, show_edit=False)
-
+        user = self.get_user_from_cookie()
+        if not user:
+            self.redirect("/blog/signup")
+        else:
+            params = {
+                "header": "Some Random Blog",
+                "blog_posts": blog_posts,
+                "show_edit": False}
+            self.go_to_requested_page("blog.html", **params)
     def get(self):
         self.render_blog()
 
