@@ -101,7 +101,7 @@ class Handler(webapp2.RequestHandler):
 
     def go_to_requested_page(self, requested_page, **params):
         self.render(
-        "{}.html".format(requested_page),
+        requested_page,
         params=params)
 
 
@@ -222,7 +222,15 @@ class Logout(Handler):
 
 class Welcome(Handler):
     def get(self):
-        self.is_logged_in("welcome")
+        """
+        Display welcome page after successful login.
+        """
+        user = self.get_user_from_cookie()
+        if not user:
+            self.redirect("/blog/signup")
+        else:
+            params = {"header": "Welcome {}!".format(user.username)}
+            self.go_to_requested_page("welcome.html", **params)
 
 
 class Blog(db.Model):

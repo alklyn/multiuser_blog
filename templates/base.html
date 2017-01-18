@@ -25,6 +25,16 @@
 
 <body>
     <div class="container-flex">
+        {% block header %}
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 text-center">
+                <div class="page-header">
+                    <h1>{{ params["header"] }}</h1>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+
         {% block content %}
         {% endblock %}
     </div>
