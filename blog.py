@@ -95,7 +95,7 @@ class Handler(webapp2.RequestHandler):
 
         if user:
             params["username"] = user.username
-            go_to_requested_page(requested_page, **params)
+            self.go_to_requested_page(requested_page, **params)
         else:
             self.redirect("/blog/signup")
 
@@ -336,7 +336,7 @@ class SelectedPost(Handler):
             params["blog_posts"] = list()
 
         params["show_edit"] = True
-        requested_page = "blog.html"
+        requested_page = "blog"
         self.go_to_requested_page(requested_page, **params)
 
     def get(self, post_id):
