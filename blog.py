@@ -348,7 +348,7 @@ class UpdatePost(CreateOrEditPost):
     Handler for updatepost page.
     """
     def get(self):
-        super(NewPost, self).get(
+        super(UpdatePost, self).get(
                                 "updatepost.html",
                                 title="Update Post",
                                 header="Update Post",
