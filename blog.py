@@ -111,8 +111,11 @@ class Signup(Handler):
     Take care of user signup.
     """
     def get(self):
-        fields = {}
-        self.render("signup.html", fields=fields, errors={})
+        params = {
+                  "header": "Sign up",
+                  "fields": {},
+                  "errors": {}}
+        self.go_to_requested_page("signup.html", **params)
 
     def validate(self, fields):
         """
@@ -145,7 +148,8 @@ class Signup(Handler):
 
         errors = self.validate(fields)
         if len(errors.keys()):
-            self.render("signup.html", fields=fields, errors=errors)
+            params = {"header": "Sign up"}
+            self.render("signup.html", fields=fields, errors=errors, **params)
         else:
             userid = self.create_user(fields)
             new_cookie_val = make_secure_val(str(userid), SECRET)

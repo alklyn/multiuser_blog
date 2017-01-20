@@ -14,28 +14,27 @@
 <div class="row">
     <div class="col-md-4 col-md-offset-4 vertical-fix">
         <div class="panel panel-primary width-fix">
-            <div class="panel-heading">Signup</div>
                 <div class="panel-body">
                     <form method="post">
                         <label class="input-box">
                             <div class="description">Username</div>
-                            <div><input type="text" name="username" value="{{ fields['username'] }}"></div>
-                            <div class="error box"> {{ errors["username"] }}</div>
+                            <div><input type="text" name="username" value="{{ params["fields"]["username"] }}"></div>
+                            <div class="error box"> {{ params["errors"]["username"] }}</div>
                         </label >
                         <label class="input-box">
                             <div class="description">Password</div>
                             <div><input type="password" name="password"></div>
-                            <div class="error box"> {{ errors["password"] }}</div>
+                            <div class="error box"> {{ params["errors"]["password"] }}</div>
                         </label >
                         <label class="input-box">
                             <div class="description">Verify Password</div>
                             <div><input type="password" name="verify"></div>
-                            <div class="error"> {{ errors["verify"] }}</div>
+                            <div class="error"> {{ params["errors"]["verify"] }}</div>
                         </label >
                         <label class="input-box">
                             <div class="description">Email (optional)</div>
-                            <div><input type="text" name="email" value="{{ fields['email'] }}"></div>
-                            <div class="error box"> {{ errors["email"] }}</div>
+                            <div><input type="text" name="email" value="{{ params["fields"]["email"] }}"></div>
+                            <div class="error box"> {{ params["errors"]["email"] }}</div>
                         </label >
                         <input type="submit">
                     </form>
