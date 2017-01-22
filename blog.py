@@ -193,8 +193,11 @@ class Signup(Handler):
 class Login(Handler):
     """ Handles user logins """
     def get(self):
-        fields = {}
-        self.render("login.html", username="", error="")
+        params = {
+                  "title": "Login",
+                  "header": "Login",
+                  "username": ""}
+        self.go_to_requested_page("login.html", **params)
 
     def post(self):
         """POST handler"""

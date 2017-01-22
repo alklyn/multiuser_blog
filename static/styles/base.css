@@ -1,6 +1,6 @@
 .input-box {
     display: flex;
-    margin-bottom: 12px;
+    margin: 12px;
 }
 
 .box {
@@ -26,9 +26,13 @@ form {
 }
 
 .vertical-fix {
-    margin-top: 20vh;
+    margin-top: 10vh;
 }
 
 .width-fix {
     max-width: 98%;
+}
+
+.panel {
+    padding: 10px;
 }
