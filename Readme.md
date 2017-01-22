@@ -19,6 +19,8 @@ registration  & login and secure storage of user passwords in a database
 * Sign Up for a [Google App Engine Account](https://console.cloud.google.com/appengine/).
 * Read the documentation [here](https://cloud.google.com/appengine/docs/python/).
 * Create a new project in [Google’s Developer Console](https://console.cloud.google.com/).
-* When developing locally, you can use ```python dev_appserver.py ```
+* When developing locally, you can use
+  ```python
+    dev_appserver.py ```
   to run a copy of your app on your own computer, and access it at http://localhost:8080/.
 * Deploy your project with ```python gcloud app deploy```.
