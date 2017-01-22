@@ -266,14 +266,11 @@ class BlogPage(Handler):
         blog_posts = Blog.all().order("-created")
         user = self.get_user_from_cookie()
 
-        if not user:
-            self.redirect("/blog/signup")
-        else:
-            params = {
-                "header": BLOG_NAME,
-                "blog_posts": blog_posts,
-                "show_edit": False}
-            self.go_to_requested_page("blog.html", **params)
+        params = {
+            "header": BLOG_NAME,
+            "blog_posts": blog_posts,
+            "show_edit": False}
+        self.go_to_requested_page("blog.html", **params)
 
     def get(self):
         self.render_blog()
