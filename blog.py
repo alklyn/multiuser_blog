@@ -145,11 +145,15 @@ class Signup(Handler):
         fields["password"] = self.request.get("password")
         fields["verify"] = self.request.get("verify")
         fields["email"] = self.request.get("email")
+        params = {
+                  "fields": fields,
+                  "errors": {}}
 
         errors = self.validate(fields)
         if len(errors.keys()):
-            params = {"header": "Sign up"}
-            self.render("signup.html", fields=fields, errors=errors, **params)
+            params["header"] = "Sign Up"
+            params["errors"] = errors
+            self.go_to_requested_page("signup.html", **params)
         else:
             userid = self.create_user(fields)
             new_cookie_val = make_secure_val(str(userid), SECRET)
