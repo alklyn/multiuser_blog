@@ -377,9 +377,6 @@ class SelectedPost(Handler):
         self.go_to_requested_page(requested_page, **params)
 
     def get(self, post_id):
-        user = self.get_user_from_cookie()
-        if not user:
-            self.redirect("/blog/signup")
         self.render_selected_post(post_id)
 
     def post(self, post_id):
@@ -389,21 +386,21 @@ class SelectedPost(Handler):
         user = self.get_user_from_cookie()
         if not user:
             self.redirect("/blog/login")
-
-        blog_post = Blog.get_by_id(int(post_id))
-
-        # Check if user is the author of the post.
-        if user.key().id() == blog_post.posted_by:
-
-            if self.request.get("choice") == "delete":
-                db.delete(blog_post)
-                self.redirect("/blog/")
-            else:
-                # Create cookie to keep track of the post we are editing
-                self.set_post_cookie(post_id)
-                self.redirect("/blog/updatepost")
         else:
-            self.render_selected_post(post_id, invalid_edit=True)
+            blog_post = Blog.get_by_id(int(post_id))
+
+            # Check if user is the author of the post.
+            if user.key().id() == blog_post.posted_by:
+
+                if self.request.get("choice") == "delete":
+                    db.delete(blog_post)
+                    self.redirect("/blog/")
+                else:
+                    # Create cookie to keep track of the post we are editing
+                    self.set_post_cookie(post_id)
+                    self.redirect("/blog/updatepost")
+            else:
+                self.render_selected_post(post_id, invalid_edit=True)
 
 
 
