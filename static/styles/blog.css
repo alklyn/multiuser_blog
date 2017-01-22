@@ -2,10 +2,6 @@
     display: flex;
 }
 
-.blog-post, pre {
-    background-color: ff0;
-}
-
 .blog-post + .blog-post {
     margin-top: 30px;
 }
