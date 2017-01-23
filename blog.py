@@ -318,6 +318,19 @@ class CreateOrEditPost(Handler):
             else:
                 params["error"] = "Subject and content please."
                 self.go_to_requested_page(page, **params)
+        else:
+            self.cancel(**params)
+
+
+    def cancel(self, **params):
+        """
+        Cancel creation of new post or cancel an edit.
+        """
+        if params["edit_mode"]:
+            blog = self.get_post_from_cookie()
+            self.redirect("/blog/{}".format(blog.key().id()))
+        else:
+            self.redirect("/blog/")
 
     def create_or_edit(self, user, **params):
         """
