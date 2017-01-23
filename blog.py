@@ -300,41 +300,41 @@ class CreateOrEditPost(Handler):
             params["blog_post"] = blog_post
             self.go_to_requested_page(page, **params)
 
-    def post(self, edit_mode=False):
+    def post(self, page, **params):
         """
         Handle POST requests.
         """
+        print("params: {}".format(params))
         user = self.get_user_from_cookie()
         if not user:
             self.redirect("/blog/signup")
 
-        print("Choice = {}".format(self.request.get("choice")))
         if self.request.get("choice") == "submit":
-            subject = self.request.get("subject")
-            content = self.request.get("content")
+            params["subject"] = self.request.get("subject")
+            params["content"] = self.request.get("content")
 
-            if subject and content:
-                # Create a new Blog object
-                if edit_mode:
-                    blog = self.get_post_from_cookie()
-                    blog.subject = subject
-                    blog.content = content
-                else:
-                    blog = Blog(
-                        subject=subject,
-                        content=content,
-                        posted_by=user.key().id())
-
-                blog.put()  # Store the content object in the database
-                self.redirect("/blog/{}".format(blog.key().id()))
+            if params["subject"] and params["content"]:
+                self.create_or_edit(user, **params)
             else:
-                error = "Subject and content please."
-                self.render(
-                    "newpost.html",
-                    error=error,
-                    content=content,
-                    subject=subject)
+                params["error"] = "Subject and content please."
+                self.go_to_requested_page(page, **params)
 
+    def create_or_edit(self, user, **params):
+        """
+        Creates a new post or edits an existing one.
+        """
+        if params["edit_mode"]:
+            blog = self.get_post_from_cookie()
+            blog.subject = params["subject"]
+            blog.content = params["content"]
+        else:
+            blog = Blog(
+                subject=params["subject"],
+                content=params["content"],
+                posted_by=user.key().id())
+
+        blog.put()  # Store the content object in the database
+        self.redirect("/blog/{}".format(blog.key().id()))
 
 
 class NewPost(CreateOrEditPost):
@@ -349,7 +349,7 @@ class NewPost(CreateOrEditPost):
                                 edit_mode=False)
 
     def post(self):
-        super(NewPost, self).post()
+        super(NewPost, self).post("newpost.html", edit_mode=False)
 
 
 class UpdatePost(CreateOrEditPost):
@@ -364,7 +364,7 @@ class UpdatePost(CreateOrEditPost):
                                 edit_mode=True)
 
     def post(self):
-        super(UpdatePost, self).post(edit_mode=True)
+        super(UpdatePost, self).post("updatepost.html", edit_mode=True)
 
 
 class SelectedPost(Handler):
