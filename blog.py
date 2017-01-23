@@ -201,16 +201,17 @@ class Login(Handler):
 
     def post(self):
         """POST handler"""
-        fields = {}
-        fields["username"] = self.request.get("username")
-        fields["password"] = self.request.get("password")
+        params = {
+                  "username": self.request.get("username"),
+                  "password": self.request.get("password")
+                  }
 
-        userid = self.validate_login(fields)
+        userid = self.validate_login(params)
         if userid:
             self.login_user(userid)
-
-        error = "Invalid login."
-        self.render("login.html", username=fields["username"], error=error)
+        else:
+            params["error"] = "Invalid login."
+            self.go_to_requested_page("login.html", **params)
 
     def validate_login(self, fields):
         """
