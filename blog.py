@@ -248,7 +248,7 @@ class Welcome(Handler):
 
 class Blog(db.Model):
     """
-    Create entity called blog.
+    Create entity for storing blog posts.
     """
     posted_by = db.IntegerProperty(required=True)
     subject = db.StringProperty(required=True)
@@ -260,6 +260,14 @@ class Blog(db.Model):
         Get the username of the user that created post.
         """
         return User.get_by_id(self.posted_by).username
+
+
+class Likes(db.Model):
+    """
+    Create entity for saving likes.
+    """
+    liked_by = db.IntegerProperty(required=True)
+    post_id = db.IntegerProperty(required=True)
 
 
 class BlogPage(Handler):
