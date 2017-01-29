@@ -45,14 +45,20 @@
                     <div class="created">
                         At {{ blog_post.created.strftime('%Y-%m-%d %H:%M') }}
                     </div>
+                    {% if params["show_edit"] %}
                     <form method="post" class="like">
-                        <button name="like" value="{{ blog_post.key().id() }}"> like </button>
-                        likes {{ 0 }}
+                        <button name="choice" value="like"> like </button>
+                        likes {{ params["num_likes"] }}
                     </form>
+                    {% endif %}
                 </div>
                 {% if params["invalid_edit"] %}
                 <div class="error">
                     You can only update or delete your own post.
+                </div>
+                {% elif params["invalid_like"] %}
+                <div class="error">
+                    You cannot like your own post.
                 </div>
                 {% endif %}
             </div>

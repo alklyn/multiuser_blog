@@ -246,6 +246,15 @@ class Welcome(Handler):
             self.go_to_requested_page("welcome.html", **params)
 
 
+class Likes(db.Model):
+    """
+    Create entity for saving likes for posts.
+    """
+    liked_by = db.IntegerProperty(required=True)
+    post_id = db.IntegerProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
+
+
 class Blog(db.Model):
     """
     Create entity for storing blog posts.
@@ -260,14 +269,6 @@ class Blog(db.Model):
         Get the username of the user that created post.
         """
         return User.get_by_id(self.posted_by).username
-
-
-class Likes(db.Model):
-    """
-    Create entity for saving likes.
-    """
-    liked_by = db.IntegerProperty(required=True)
-    post_id = db.IntegerProperty(required=True)
 
 
 class BlogPage(Handler):
@@ -354,7 +355,7 @@ class CreateOrEditPost(Handler):
                 content=params["content"],
                 posted_by=user.key().id())
 
-        blog.put()  # Store the content object in the database
+        blog.put()  # Store the entity in the database
         self.redirect("/blog/{}".format(blog.key().id()))
 
 
@@ -398,6 +399,10 @@ class SelectedPost(Handler):
 
         params["show_edit"] = True
         params["header"] = BLOG_NAME
+
+        params["num_likes"] = self.get_num_likes(post_id)
+        if not params["num_likes"]:
+            params["num_likes"] = 0;
         requested_page = "blog.html"
         self.go_to_requested_page(requested_page, **params)
 
@@ -414,20 +419,36 @@ class SelectedPost(Handler):
         else:
             blog_post = Blog.get_by_id(int(post_id))
 
+            # Create cookie to keep track of the post we are editing/deleting.
+            self.set_post_cookie(post_id)
+            choice = self.request.get("choice")
+
             # Check if user is the author of the post.
             if user.key().id() == blog_post.posted_by:
-
-                if self.request.get("choice") == "delete":
+                if choice == "delete":
                     db.delete(blog_post)
                     self.redirect("/blog/")
-                else:
-                    # Create cookie to keep track of the post we are editing
-                    self.set_post_cookie(post_id)
+                elif choice == "edit":
                     self.redirect("/blog/updatepost")
+                elif choice == "like":
+                    self.render_selected_post(post_id, invalid_like=True)
             else:
-                self.render_selected_post(post_id, invalid_edit=True)
+                if choice == "like":
+                    self.like_unlike(post_id, user.key().id())
+                else:
+                    self.render_selected_post(post_id, invalid_edit=True)
 
-
+    def like_unlike(self, post_id, liked_by):
+        """
+        Update the likes on the given post.
+        """
+        like = self.get_like(post_id, liked_by)
+        if like:
+            db.delete(like)
+        else:
+            like = Like(posted_by, liked_by)
+            like.put()
+        self.render_selected_post(post_id)
 
     def set_post_cookie(self, post_id):
         """
@@ -437,6 +458,28 @@ class SelectedPost(Handler):
         self.response.headers.add_header(
             "Set-Cookie",
             "post_id={};Path=/".format(new_cookie_val))
+
+    def get_like(self, post_id, liked_by):
+        """
+        Get a particular like from the database.
+        """
+        query = """
+            SELECT * FROM Likes
+            WHERE post_id = {}
+            AND liked_by = {};
+        """.format(post_id, liked_by)
+        return db.GqlQuery(query).get()
+
+    def get_num_likes(self, post_id):
+        """
+        Get the number of likes that a particular post has recieved.
+        """
+        query = """
+            SELECT COUNT(post_id) FROM Likes
+            WHERE post_id = {};
+        """.format(post_id)
+        return db.GqlQuery(query).get()
+
 
 app = webapp2.WSGIApplication([
     ('/blog/signup', Signup),
