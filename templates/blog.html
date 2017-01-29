@@ -14,23 +14,15 @@
     <div class="row">
         {% for blog_post in params["blog_posts"] %}
             <div class="col-md-4 col-md-offset-4 blog-post">
-                <div class="post-subject">
-                    <a href="{{ blog_post.key().id() }}">
-                        <h3>{{ blog_post.subject }}</h3>
-                    </a>
-                </div>
-                <div class="post-content">
-                    <pre>{{ blog_post.content }}</pre>
-                </div>
-                <div class="footer">
-                    <div class="posted-by">
-                        Posted by {{ blog_post.get_poster() }}
+                <div class="post-header">
+                    <div class="post-subject">
+                        <a href="{{ blog_post.key().id() }}">
+                            <h3>{{ blog_post.subject }}</h3>
+                        </a>
                     </div>
-                    <div class="created">
-                        At {{ blog_post.created.strftime('%Y-%m-%d %H:%M') }}
-                    </div>
+
                     {% if params["show_edit"] %}
-                    <form class="flexx" method="post">
+                    <form class="edit-or-delete" method="post">
                         <input type="hidden" name="post_id" value="{{ blog_post.key().id() }}">
                         <div class="edit">
                             <button name="choice" value="edit"> Edit </button>
@@ -40,6 +32,19 @@
                         </div>
                     </form>
                     {% endif %}
+                </div>
+
+                <div class="post-content">
+                    <pre>{{ blog_post.content }}</pre>
+                </div>
+
+                <div class="footer">
+                    <div class="posted-by">
+                        Posted by {{ blog_post.get_poster() }}
+                    </div>
+                    <div class="created">
+                        At {{ blog_post.created.strftime('%Y-%m-%d %H:%M') }}
+                    </div>
                 </div>
                 {% if params["invalid_edit"] %}
                 <div class="error">
