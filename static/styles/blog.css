@@ -23,21 +23,17 @@ pre {
     overflow-x: hidden;
 }
 
-.footer, .flexx {
-    display: flex;
-}
-
 .posted-by, .created {
     margin-right: 10px;
     font-size: 0.8em;
     font-style: italic;
 }
 
-.edit-or-delete, .post-header {
+.edit-or-delete, .post-header, .footer {
     display: flex;
 }
 
-.edit-or-delete {
+.edit-or-delete, .like {
     margin-left: auto;
 }
 

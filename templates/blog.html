@@ -45,6 +45,10 @@
                     <div class="created">
                         At {{ blog_post.created.strftime('%Y-%m-%d %H:%M') }}
                     </div>
+                    <form method="post" class="like">
+                        <button name="like" value="{{ blog_post.key().id() }}"> like </button>
+                        likes {{ 0 }}
+                    </form>
                 </div>
                 {% if params["invalid_edit"] %}
                 <div class="error">
