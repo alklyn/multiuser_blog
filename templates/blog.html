@@ -48,7 +48,7 @@
                     {% if params["show_edit"] %}
                     <form method="post" class="like">
                         <button name="choice" value="like"> like </button>
-                        likes {{ params["num_likes"] }}
+                        likes {{ blog_post.num_likes }}
                     </form>
                     {% endif %}
                 </div>

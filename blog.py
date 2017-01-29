@@ -262,6 +262,7 @@ class Blog(db.Model):
     posted_by = db.IntegerProperty(required=True)
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
+    num_likes = db.IntegerProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
 
     def get_poster(self):
@@ -353,7 +354,8 @@ class CreateOrEditPost(Handler):
             blog = Blog(
                 subject=params["subject"],
                 content=params["content"],
-                posted_by=user.key().id())
+                posted_by=user.key().id(),
+                num_likes=0)
 
         blog.put()  # Store the entity in the database
         self.redirect("/blog/{}".format(blog.key().id()))
@@ -396,13 +398,8 @@ class SelectedPost(Handler):
             params["blog_posts"] = [Blog.get_by_id(int(post_id))]
         else:
             params["blog_posts"] = list()
-
         params["show_edit"] = True
         params["header"] = BLOG_NAME
-
-        params["num_likes"] = self.get_num_likes(post_id)
-        if not params["num_likes"]:
-            params["num_likes"] = 0;
         requested_page = "blog.html"
         self.go_to_requested_page(requested_page, **params)
 
@@ -442,12 +439,17 @@ class SelectedPost(Handler):
         """
         Update the likes on the given post.
         """
+        blog_post = Blog.get_by_id(int(post_id))
         like = self.get_like(post_id, liked_by)
         if like:
             db.delete(like)
+            blog_post.num_likes -= 1
         else:
             like = Like(posted_by, liked_by)
             like.put()
+            blog_post.num_likes += 1
+
+        blog_post.put()
         self.render_selected_post(post_id)
 
     def set_post_cookie(self, post_id):
@@ -468,16 +470,6 @@ class SelectedPost(Handler):
             WHERE post_id = {}
             AND liked_by = {};
         """.format(post_id, liked_by)
-        return db.GqlQuery(query).get()
-
-    def get_num_likes(self, post_id):
-        """
-        Get the number of likes that a particular post has recieved.
-        """
-        query = """
-            SELECT COUNT(post_id) FROM Likes
-            WHERE post_id = {};
-        """.format(post_id)
         return db.GqlQuery(query).get()
 
 
