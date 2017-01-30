@@ -439,13 +439,14 @@ class SelectedPost(Handler):
         """
         Update the likes on the given post.
         """
+        post_id = int(post_id)
         blog_post = Blog.get_by_id(int(post_id))
         like = self.get_like(post_id, liked_by)
         if like:
             db.delete(like)
             blog_post.num_likes -= 1
         else:
-            like = Like(posted_by, liked_by)
+            like = Likes(post_id=post_id, liked_by=liked_by)
             like.put()
             blog_post.num_likes += 1
 
