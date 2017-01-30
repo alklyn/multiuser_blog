@@ -20,22 +20,6 @@
                             <h3>{{ blog_post.subject }}</h3>
                         </a>
                     </div>
-
-                    {% if params["show_edit"] %}
-                    <form class="edit-or-delete" method="post">
-                        <input type="hidden" name="post_id" value="{{ blog_post.key().id() }}">
-                        <div class="edit">
-                            <button name="choice" value="edit" data-toggle="tooltip" data-placement="top" title="Edit Post">
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                        <div class="edit">
-                            <button name="choice" value="delete" data-toggle="tooltip" data-placement="top" title="Delete Post">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                    </form>
-                    {% endif %}
                 </div>
 
                 <div class="post-content">
@@ -49,15 +33,31 @@
                     <div class="created">
                         At {{ blog_post.created.strftime('%Y-%m-%d %H:%M') }}
                     </div>
-                    {% if params["show_edit"] %}
-                    <form method="post" class="like">
+                </div>
+                {% if params["show_edit"] %}
+                <form class="edit-or-delete" method="post">
+                    <input type="hidden" name="post_id" value="{{ blog_post.key().id() }}">
+                    <div class="edit">
+                        <button name="choice" value="edit" data-toggle="tooltip" data-placement="top" title="Edit Post">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </button>
+                    </div>
+
+                    <div class="edit">
+                        <button name="choice" value="delete" data-toggle="tooltip" data-placement="top" title="Delete Post">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </button>
+                    </div>
+
+                    <div class="edit">
                         <button name="choice" value="like" data-toggle="tooltip" data-placement="top" title="Like">
                             <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
                         </button>
                         likes {{ blog_post.num_likes }}
-                    </form>
-                    {% endif %}
-                </div>
+                    </div>
+                </form>
+                {% endif %}
+
                 {% if params["invalid_edit"] %}
                 <div class="error">
                     You can only update or delete your own post.
