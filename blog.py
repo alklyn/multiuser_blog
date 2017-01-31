@@ -205,6 +205,8 @@ class Login(Handler):
     def post(self):
         """POST handler"""
         params = {
+                  "title": "Login",
+                  "header": "Login",
                   "username": self.request.get("username"),
                   "password": self.request.get("password")
                   }
