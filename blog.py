@@ -111,8 +111,11 @@ class Signup(Handler):
     Take care of user signup.
     """
     def get(self):
+        """
+        Handle GET requests
+        """
         params = {
-                  "header": "Sign up",
+                  "header": "Signup",
                   "fields": {},
                   "errors": {}}
         self.go_to_requested_page("signup.html", **params)
@@ -476,9 +479,11 @@ class SelectedPost(Handler):
 
 app = webapp2.WSGIApplication([
     ('/blog/signup', Signup),
+    ('/blog/signup/', Signup),
     ('/blog/welcome', Welcome),
     ('/blog/login', Login),
-    ('/blog/logout', Logout),
+    ('/blog/login/', Login),
+    ('/blog/logout/', Logout),
     ('/blog', BlogPage),
     ('/blog/', BlogPage),
     ('/blog/newpost', NewPost),
