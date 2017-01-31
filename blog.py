@@ -229,7 +229,9 @@ class Login(Handler):
 
 
 class Logout(Handler):
-    """ Handles user logout """
+    """
+    Handle user logout
+    """
     def get(self):
         fields = {}
         self.response.delete_cookie('userid')
@@ -237,6 +239,9 @@ class Logout(Handler):
 
 
 class Welcome(Handler):
+    """
+    Display greeting.
+    """
     def get(self):
         """
         Display welcome page after successful login.
@@ -247,6 +252,22 @@ class Welcome(Handler):
         else:
             params = {"header": "Welcome {}!".format(user.username)}
             self.go_to_requested_page("welcome.html", **params)
+
+
+class DeleteSuccessful(Handler):
+    """
+    Display message on successful deletion of post.
+    """
+    def get(self):
+        """
+        Handle GET requests.
+        """
+        user = self.get_user_from_cookie()
+        if not user:
+            self.redirect("/blog/signup")
+        else:
+            params = {"header": "Post successfully deleted!"}
+            self.go_to_requested_page("delete_successful.html", **params)
 
 
 class Likes(db.Model):
@@ -427,7 +448,7 @@ class SelectedPost(Handler):
             if user.key().id() == blog_post.posted_by:
                 if choice == "delete":
                     db.delete(blog_post)
-                    self.redirect("/blog/")
+                    self.redirect("/blog/delete_successful")
                 elif choice == "edit":
                     self.redirect("/blog/updatepost")
                 elif choice == "like":
@@ -489,5 +510,6 @@ app = webapp2.WSGIApplication([
     ('/blog/', BlogPage),
     ('/blog/newpost', NewPost),
     ('/blog/updatepost', UpdatePost),
-    ('/blog/([\d]*)', SelectedPost)
+    ('/blog/([\d]*)', SelectedPost),
+    ('/blog/delete_successful', DeleteSuccessful),
 ], debug=True)
