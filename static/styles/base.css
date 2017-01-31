@@ -36,3 +36,7 @@ form {
 .panel {
     padding: 10px;
 }
+
+a + a {
+    margin-left: 20px;
+}

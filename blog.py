@@ -483,6 +483,7 @@ app = webapp2.WSGIApplication([
     ('/blog/welcome', Welcome),
     ('/blog/login', Login),
     ('/blog/login/', Login),
+    ('/blog/logout', Logout),
     ('/blog/logout/', Logout),
     ('/blog', BlogPage),
     ('/blog/', BlogPage),

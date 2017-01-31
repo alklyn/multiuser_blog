@@ -31,11 +31,16 @@
                 <div class="page-header">
                     <h1>{{ params["header"] }}</h1>
                     <h5>
-                        or
                         {% if params["header"] == "Signup" %}
+                            or
                             <a href="/blog/login"> Login </a>
                         {% elif params["header"] == "Login" %}
+                            or
                             <a href="/blog/signup"> Signup </a>
+                        {% else %}
+                            <a href="/blog"> Main </a>
+                            <a href="/blog/newpost"> New Post </a>
+                            <a href="/blog/logout"> Logout </a>
                         {% endif %}
                     </h5>
                 </div>
