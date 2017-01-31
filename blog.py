@@ -156,7 +156,7 @@ class Signup(Handler):
             params["errors"] = errors
             self.go_to_requested_page("signup.html", **params)
         else:
-            userid = self.create_user(fields)
+            userid = self.create_user(params)
             new_cookie_val = make_secure_val(str(userid), SECRET)
             self.login_user(userid)
 
