@@ -116,7 +116,6 @@ class Signup(Handler):
         """
         params = {
                   "header": "Signup",
-                  "fields": {},
                   "errors": {}}
         self.go_to_requested_page("signup.html", **params)
 
@@ -143,18 +142,17 @@ class Signup(Handler):
 
     def post(self):
         """POST handler"""
-        fields = {}
-        fields["username"] = self.request.get("username")
-        fields["password"] = self.request.get("password")
-        fields["verify"] = self.request.get("verify")
-        fields["email"] = self.request.get("email")
         params = {
-                  "fields": fields,
-                  "errors": {}}
+            "username": self.request.get("username"),
+            "password": self.request.get("password"),
+            "verify": self.request.get("verify"),
+            "email": self.request.get("email"),
+            "errors": {}
+        }
 
-        errors = self.validate(fields)
+        errors = self.validate(params)
         if len(errors.keys()):
-            params["header"] = "Sign Up"
+            params["header"] = "Signup"
             params["errors"] = errors
             self.go_to_requested_page("signup.html", **params)
         else:

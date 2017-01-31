@@ -18,7 +18,7 @@
                     <form method="post">
                         <label class="input-box">
                             <div class="description">Username</div>
-                            <div><input type="text" name="username" value="{{ params["fields"]["username"] }}"></div>
+                            <div><input type="text" name="username" value="{{ params["username"] }}"></div>
                             <div class="error box"> {{ params["errors"]["username"] }}</div>
                         </label >
                         <label class="input-box">
@@ -33,7 +33,7 @@
                         </label >
                         <label class="input-box">
                             <div class="description">Email (optional)</div>
-                            <div><input type="text" name="email" value="{{ params["fields"]["email"] }}"></div>
+                            <div><input type="text" name="email" value="{{ params["email"] }}"></div>
                             <div class="error box"> {{ params["errors"]["email"] }}</div>
                         </label >
                         <input type="submit">
