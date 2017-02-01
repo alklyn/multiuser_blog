@@ -56,6 +56,18 @@
                         likes {{ blog_post.num_likes }}
                     </div>
                 </form>
+                <form class="add-comment" method="post">
+                    <label  class="comment">
+                        <div>
+                            Add Comment
+                        </div>
+                        <textarea name="comment">
+                        </textarea>
+                    </label>
+                    <button name="choice" value="like" data-toggle="tooltip" data-placement="top" title="Save Comment">
+                        <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
+                    </button>
+                </form>
                 {% endif %}
 
                 {% if params["invalid_edit"] %}

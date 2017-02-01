@@ -2,7 +2,7 @@
     float:left;
 }
 
-.blog-post + .blog-post {
+.blog-post + .blog-post, form + form {
     margin-top: 30px;
 }
 
@@ -43,4 +43,12 @@ pre {
 
 .edit + .edit {
     margin-left: 20px;
+}
+
+.add-comment {
+    display: block;
+}
+
+.comment {
+    width: 100%;
 }
