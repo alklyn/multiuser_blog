@@ -400,6 +400,7 @@ class SelectedPost(Handler):
         Handle post requests
         """
         user = self.get_user_from_cookie()
+        userid = user.key().id()
         if not user:
             self.redirect("/blog/login")
         else:
@@ -409,20 +410,41 @@ class SelectedPost(Handler):
             self.set_post_cookie(post_id)
             choice = self.request.get("choice")
 
-            # Check if user is the author of the post.
-            if user.key().id() == blog_post.posted_by:
-                if choice == "delete":
-                    db.delete(blog_post)
-                    self.redirect("/blog/delete_successful")
-                elif choice == "edit":
-                    self.redirect("/blog/updatepost")
-                elif choice == "like":
-                    self.render_selected_post(post_id, invalid_like=True)
+            if choice == "add_comment":
+                self.add_comment(userid, post_id, blog_post)
             else:
-                if choice == "like":
-                    self.like_unlike(post_id, user.key().id())
-                else:
-                    self.render_selected_post(post_id, invalid_edit=True)
+                self.edit_or_delete(userid, post_id, choice, blog_post)
+
+    def add_comment(self, userid, post_id, blog_post):
+        """
+        Add comment to posts.
+        """
+        params = {
+            "header": BLOG_NAME,
+            "blog_posts": [blog_post],
+            "show_edit": True,
+            "comments": [self.request.get("comment")]
+        }
+        self.go_to_requested_page("blog.html", **params)
+
+    def edit_or_delete(self, userid, post_id, choice, blog_post):
+        """
+        Perform edits or deletes
+        """
+        # Check if user is the author of the post.
+        if userid == blog_post.posted_by:
+            if choice == "delete":
+                db.delete(blog_post)
+                self.redirect("/blog/delete_successful")
+            elif choice == "edit":
+                self.redirect("/blog/updatepost")
+            elif choice == "like":
+                self.render_selected_post(post_id, invalid_like=True)
+        else:
+            if choice == "like":
+                self.like_unlike(post_id, userid)
+            else:
+                self.render_selected_post(post_id, invalid_edit=True)
 
     def like_unlike(self, post_id, liked_by):
         """

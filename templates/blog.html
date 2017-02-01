@@ -56,6 +56,7 @@
                         likes {{ blog_post.num_likes }}
                     </div>
                 </form>
+
                 <form class="add-comment" method="post">
                     <label  class="comment">
                         <div>
@@ -64,10 +65,15 @@
                         <textarea name="comment">
                         </textarea>
                     </label>
-                    <button name="choice" value="like" data-toggle="tooltip" data-placement="top" title="Save Comment">
+                    <button name="choice" value="add_comment" data-toggle="tooltip" data-placement="top" title="Save Comment">
                         <span class="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
                     </button>
                 </form>
+
+                {% for comment in params["comments"] %}
+                <pre>{{ comment }}</pre>
+                {% endfor %}
+
                 {% endif %}
 
                 {% if params["invalid_edit"] %}
