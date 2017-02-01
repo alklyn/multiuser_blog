@@ -1,6 +1,7 @@
 """
 Contains entities used y the app.
 """
+from google.appengine.ext import db
 
 class User(db.Model):
     """
@@ -19,15 +20,6 @@ def fetch_data(username):
     return db.GqlQuery(query)
 
 
-class Likes(db.Model):
-    """
-    Create entity for saving likes for posts.
-    """
-    liked_by = db.IntegerProperty(required=True)
-    post_id = db.IntegerProperty(required=True)
-    created = db.DateTimeProperty(auto_now_add=True)
-
-
 class Blog(db.Model):
     """
     Create entity for storing blog posts.
@@ -43,3 +35,22 @@ class Blog(db.Model):
         Get the username of the user that created post.
         """
         return User.get_by_id(self.posted_by).username
+
+
+class Likes(db.Model):
+    """
+    Create entity for saving likes for posts.
+    """
+    liked_by = db.IntegerProperty(required=True)
+    post_id = db.IntegerProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
+
+
+class Comment(db.Model):
+    """
+    Entity for saving comments.
+    """
+    #The id of the post commented on
+    post_id = db.IntegerProperty(required=True)
+    comment_by = db.IntegerProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
