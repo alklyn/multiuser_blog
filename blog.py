@@ -8,7 +8,7 @@ from hasha2 import make_pw_hash
 from hasha2 import valid_pw
 from hasha2 import make_secure_val
 from hasha2 import check_secure_val
-from google.appengine.ext import db
+from entities import *
 import re
 
 
@@ -25,15 +25,6 @@ jinja_env = \
         template_dir), autoescape=True)
 
 SECRET = "ma7aK0Ay3HuRud@K0r!y3RiN0taP1rawHoor3P!x1M@gar0"
-
-class User(db.Model):
-    """
-    Entity for storing user details.
-    """
-    username = db.StringProperty(required=True)
-    pw_hash = db.StringProperty(required=True)
-    email = db.StringProperty(required=False)
-    joined = db.DateTimeProperty(auto_now_add=True)
 
 def fetch_data(username):
     """Fetch data from db """
@@ -268,32 +259,6 @@ class DeleteSuccessful(Handler):
         else:
             params = {"header": "Post successfully deleted!"}
             self.go_to_requested_page("delete_successful.html", **params)
-
-
-class Likes(db.Model):
-    """
-    Create entity for saving likes for posts.
-    """
-    liked_by = db.IntegerProperty(required=True)
-    post_id = db.IntegerProperty(required=True)
-    created = db.DateTimeProperty(auto_now_add=True)
-
-
-class Blog(db.Model):
-    """
-    Create entity for storing blog posts.
-    """
-    posted_by = db.IntegerProperty(required=True)
-    subject = db.StringProperty(required=True)
-    content = db.TextProperty(required=True)
-    num_likes = db.IntegerProperty(required=True)
-    created = db.DateTimeProperty(auto_now_add=True)
-
-    def get_poster(self):
-        """
-        Get the username of the user that created post.
-        """
-        return User.get_by_id(self.posted_by).username
 
 
 class BlogPage(Handler):
