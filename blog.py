@@ -399,6 +399,7 @@ class SelectedPost(Handler):
         """
         Handle post requests
         """
+        post_id = int(post_id)
         user = self.get_user_from_cookie()
         userid = user.key().id()
         if not user:
@@ -419,13 +420,33 @@ class SelectedPost(Handler):
         """
         Add comment to posts.
         """
+        blog_comment = Comment(
+            post_id=post_id,
+            commented_by=userid,
+            comment=self.request.get("comment"))
+        blog_comment.put()
+
+        blog_comments = self.get_comments_for_post(post_id)
+
         params = {
             "header": BLOG_NAME,
             "blog_posts": [blog_post],
             "show_edit": True,
-            "comments": [self.request.get("comment")]
+            "blog_comments": blog_comments
         }
         self.go_to_requested_page("blog.html", **params)
+
+    def get_comments_for_post(self, post_id):
+        """
+        Get all the comments for a paticular post.
+        """
+        query = """
+             SELECT * FROM Comment WHERE post_id = '{}'
+        """.format(post_id)
+        cur = db.GqlQuery(query)
+        blog_comments = Comment.all().filter("post_id = ", post_id)
+
+        return blog_comments
 
     def edit_or_delete(self, userid, post_id, choice, blog_post):
         """

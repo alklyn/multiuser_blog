@@ -70,8 +70,8 @@
                     </button>
                 </form>
 
-                {% for comment in params["comments"] %}
-                <pre>{{ comment }}</pre>
+                {% for blog_comment in params["blog_comments"] %}
+                <pre>{{ blog_comment.comment }}</pre>
                 {% endfor %}
 
                 {% endif %}

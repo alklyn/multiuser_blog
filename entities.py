@@ -51,6 +51,7 @@ class Comment(db.Model):
     Entity for saving comments.
     """
     #The id of the post commented on
+    comment = db.TextProperty(required=True)
     post_id = db.IntegerProperty(required=True)
-    comment_by = db.IntegerProperty(required=True)
+    commented_by = db.IntegerProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
