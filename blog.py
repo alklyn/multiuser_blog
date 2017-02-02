@@ -383,14 +383,21 @@ class UpdatePost(CreateOrEditPost):
 class SelectedPost(Handler):
     """Display selected post or display latest post."""
     def render_selected_post(self, post_id, **params):
+        """
+        Display the post with the id "post_id"
+        """
+        blog_comments = self.get_comments_for_post(post_id)
+        params = {
+            "header": BLOG_NAME,
+            "show_edit": True,
+            "blog_comments": blog_comments
+        }
+
         if Blog.get_by_id(int(post_id)):
             params["blog_posts"] = [Blog.get_by_id(int(post_id))]
         else:
             params["blog_posts"] = list()
-        params["show_edit"] = True
-        params["header"] = BLOG_NAME
-        requested_page = "blog.html"
-        self.go_to_requested_page(requested_page, **params)
+        self.go_to_requested_page("blog.html", **params)
 
     def get(self, post_id):
         self.render_selected_post(post_id)
@@ -401,11 +408,12 @@ class SelectedPost(Handler):
         """
         post_id = int(post_id)
         user = self.get_user_from_cookie()
-        userid = user.key().id()
+
         if not user:
             self.redirect("/blog/login")
         else:
             blog_post = Blog.get_by_id(int(post_id))
+            userid = user.key().id()
 
             # Create cookie to keep track of the post we are editing/deleting.
             self.set_post_cookie(post_id)

@@ -16,6 +16,15 @@ pre {
     max-width: 100%;
     overflow-x: hidden;
     border: 0px;
+    display: block;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.42857143;
+    color: #333;
+    word-wrap: break-word;
+    background-color: #f5f5f5;
+    border-radius: 4px;
 }
 
 .post-content {
