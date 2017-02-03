@@ -73,8 +73,8 @@ def make_pw_hash(username, pssswd, **kw):
 
 def valid_pw(name, pw, h):
     """
-    Implement the function valid_pw() that returns True if a user's password
-    matches its hash. You will need to modify make_pw_hash.
+    Check if userame/password combination is valid.
+    Returns True if a user's password matches its hash.
 
     """
     salt = h.split(",")[1]

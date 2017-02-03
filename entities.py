@@ -1,34 +1,34 @@
 """
 Contains entities used y the app.
 """
-from google.appengine.ext import db
+from google.appengine.ext import ndb
 
-class User(db.Model):
+class User(ndb.Model):
     """
     Entity for storing user details.
     """
-    username = db.StringProperty(required=True)
-    pw_hash = db.StringProperty(required=True)
-    email = db.StringProperty(required=False)
-    joined = db.DateTimeProperty(auto_now_add=True)
+    username = ndb.StringProperty(required=True)
+    pw_hash = ndb.StringProperty(required=True)
+    email = ndb.StringProperty(required=False)
+    joined = ndb.DateTimeProperty(auto_now_add=True)
 
 def fetch_data(username):
     """Fetch data from db """
     query = """
          SELECT * FROM User WHERE username = '{}'
     """.format(username)
-    return db.GqlQuery(query)
+    return ndb.GqlQuery(query)
 
 
-class Blog(db.Model):
+class Blog(ndb.Model):
     """
     Create entity for storing blog posts.
     """
-    posted_by = db.IntegerProperty(required=True)
-    subject = db.StringProperty(required=True)
-    content = db.TextProperty(required=True)
-    num_likes = db.IntegerProperty(required=True)
-    created = db.DateTimeProperty(auto_now_add=True)
+    posted_by = ndb.IntegerProperty(required=True)
+    subject = ndb.StringProperty(required=True)
+    content = ndb.TextProperty(required=True)
+    num_likes = ndb.IntegerProperty(required=True)
+    created = ndb.DateTimeProperty(auto_now_add=True)
 
     def get_poster(self):
         """
@@ -36,22 +36,28 @@ class Blog(db.Model):
         """
         return User.get_by_id(self.posted_by).username
 
+    def get_posts(self):
+        """
+        Get all the posts
+        """
+        return self.query()
 
-class Likes(db.Model):
+
+class Likes(ndb.Model):
     """
     Create entity for saving likes for posts.
     """
-    liked_by = db.IntegerProperty(required=True)
-    post_id = db.IntegerProperty(required=True)
-    created = db.DateTimeProperty(auto_now_add=True)
+    liked_by = ndb.IntegerProperty(required=True)
+    post_id = ndb.IntegerProperty(required=True)
+    created = ndb.DateTimeProperty(auto_now_add=True)
 
 
-class Comment(db.Model):
+class Comment(ndb.Model):
     """
     Entity for saving comments.
     """
     #The id of the post commented on
-    comment = db.TextProperty(required=True)
-    post_id = db.IntegerProperty(required=True)
-    commented_by = db.IntegerProperty(required=True)
-    created = db.DateTimeProperty(auto_now_add=True)
+    comment = ndb.TextProperty(required=True)
+    post_id = ndb.IntegerProperty(required=True)
+    commented_by = ndb.IntegerProperty(required=True)
+    created = ndb.DateTimeProperty(auto_now_add=True)

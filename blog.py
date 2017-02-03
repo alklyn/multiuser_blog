@@ -26,14 +26,6 @@ jinja_env = \
 
 SECRET = "ma7aK0Ay3HuRud@K0r!y3RiN0taP1rawHoor3P!x1M@gar0"
 
-def fetch_data(username):
-    """Fetch data from db """
-    query = """
-         SELECT * FROM User WHERE username = '{}'
-    """.format(username)
-    return db.GqlQuery(query)
-
-
 class Handler(webapp2.RequestHandler):
     """
     Base class for all the app's request handlers
@@ -165,7 +157,7 @@ class Signup(Handler):
         user = User(username=username, pw_hash=pw_hash)
         user.put() # Save new user to db
 
-        return user.key().id() #return userid
+        return user.key.id() #return userid
 
     def check_if_user_exists(self, username):
         """
@@ -174,7 +166,7 @@ class Signup(Handler):
         query = """
              SELECT * FROM User WHERE username = '{}'
         """.format(username)
-        cur = db.GqlQuery(query)
+        cur = ndb.GqlQuery(query)
         user = cur.get()
         if user:
             if user.username == username:
@@ -212,11 +204,12 @@ class Login(Handler):
         Test if login is valid.
         If the login is valid return userid
         """
-        cur = fetch_data(fields["username"])
-        user = cur.get()
+        users = User.query()
+        users = users.filter(User.username == fields["username"])
+        user = users.get()
         if user:
             if valid_pw(fields["username"], fields["password"], user.pw_hash):
-                return user.key().id()
+                return user.key.id()
 
 
 class Logout(Handler):
@@ -266,7 +259,7 @@ class BlogPage(Handler):
     Page for displaying posts.
     """
     def render_blog(self):
-        blog_posts = Blog.all().order("-created")
+        blog_posts = Blog.query()
         user = self.get_user_from_cookie()
 
         params = {
@@ -327,7 +320,7 @@ class CreateOrEditPost(Handler):
         """
         if params["edit_mode"]:
             blog = self.get_post_from_cookie()
-            self.redirect("/blog/{}".format(blog.key().id()))
+            self.redirect("/blog/{}".format(blog.key.id()))
         else:
             self.redirect("/blog/")
 
@@ -343,11 +336,11 @@ class CreateOrEditPost(Handler):
             blog = Blog(
                 subject=params["subject"],
                 content=params["content"],
-                posted_by=user.key().id(),
+                posted_by=user.key.id(),
                 num_likes=0)
 
         blog.put()  # Store the entity in the database
-        self.redirect("/blog/{}".format(blog.key().id()))
+        self.redirect("/blog/{}".format(blog.key.id()))
 
 
 class NewPost(CreateOrEditPost):
@@ -413,7 +406,7 @@ class SelectedPost(Handler):
             self.redirect("/blog/login")
         else:
             blog_post = Blog.get_by_id(int(post_id))
-            userid = user.key().id()
+            userid = user.key.id()
 
             # Create cookie to keep track of the post we are editing/deleting.
             self.set_post_cookie(post_id)
@@ -448,13 +441,7 @@ class SelectedPost(Handler):
         """
         Get all the comments for a paticular post.
         """
-        query = """
-             SELECT * FROM Comment WHERE post_id = '{}'
-        """.format(post_id)
-        cur = db.GqlQuery(query)
-        blog_comments = Comment.all().filter("post_id = ", post_id)
-
-        return blog_comments
+        return Comment.query()
 
     def edit_or_delete(self, userid, post_id, choice, blog_post):
         """
@@ -463,7 +450,7 @@ class SelectedPost(Handler):
         # Check if user is the author of the post.
         if userid == blog_post.posted_by:
             if choice == "delete":
-                db.delete(blog_post)
+                ndb.delete(blog_post)
                 self.redirect("/blog/delete_successful")
             elif choice == "edit":
                 self.redirect("/blog/updatepost")
@@ -483,7 +470,7 @@ class SelectedPost(Handler):
         blog_post = Blog.get_by_id(int(post_id))
         like = self.get_like(post_id, liked_by)
         if like:
-            db.delete(like)
+            ndb.delete(like)
             blog_post.num_likes -= 1
         else:
             like = Likes(post_id=post_id, liked_by=liked_by)
@@ -511,7 +498,7 @@ class SelectedPost(Handler):
             WHERE post_id = {}
             AND liked_by = {};
         """.format(post_id, liked_by)
-        return db.GqlQuery(query).get()
+        return ndb.GqlQuery(query).get()
 
 
 app = webapp2.WSGIApplication([
