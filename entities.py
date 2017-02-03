@@ -3,6 +3,12 @@ Contains entities used y the app.
 """
 from google.appengine.ext import ndb
 
+def get_user(username):
+    users = User.query()
+    users = users.filter(User.username == username)
+    return users.get()
+
+
 class User(ndb.Model):
     """
     Entity for storing user details.
@@ -11,13 +17,6 @@ class User(ndb.Model):
     pw_hash = ndb.StringProperty(required=True)
     email = ndb.StringProperty(required=False)
     joined = ndb.DateTimeProperty(auto_now_add=True)
-
-def fetch_data(username):
-    """Fetch data from db """
-    query = """
-         SELECT * FROM User WHERE username = '{}'
-    """.format(username)
-    return ndb.GqlQuery(query)
 
 
 class Blog(ndb.Model):
@@ -40,7 +39,7 @@ class Blog(ndb.Model):
         """
         Get all the posts
         """
-        return self.query()
+        return self.query().order(-Comment.created)
 
 
 class Likes(ndb.Model):

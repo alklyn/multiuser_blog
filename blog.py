@@ -161,16 +161,10 @@ class Signup(Handler):
 
     def check_if_user_exists(self, username):
         """
-        Check if someone is already using the name
+        Check if someone is already using the username.
         """
-        query = """
-             SELECT * FROM User WHERE username = '{}'
-        """.format(username)
-        cur = ndb.GqlQuery(query)
-        user = cur.get()
-        if user:
-            if user.username == username:
-                return True
+        if get_user(username):
+            return True
         return False
 
 
@@ -204,9 +198,7 @@ class Login(Handler):
         Test if login is valid.
         If the login is valid return userid
         """
-        users = User.query()
-        users = users.filter(User.username == fields["username"])
-        user = users.get()
+        user = get_user(fields["username"])
         if user:
             if valid_pw(fields["username"], fields["password"], user.pw_hash):
                 return user.key.id()
@@ -259,7 +251,7 @@ class BlogPage(Handler):
     Page for displaying posts.
     """
     def render_blog(self):
-        blog_posts = Blog.query()
+        blog_posts = Blog.query().order(-Comment.created)
         user = self.get_user_from_cookie()
 
         params = {
@@ -379,7 +371,10 @@ class SelectedPost(Handler):
         """
         Display the post with the id "post_id"
         """
-        blog_comments = self.get_comments_for_post(post_id)
+        post_id = int(post_id)
+        blog_comments = Comment.query().filter(Comment.post_id == post_id)
+        blog_comments = blog_comments.order(-Comment.created)
+
         params = {
             "header": BLOG_NAME,
             "show_edit": True,
@@ -427,7 +422,8 @@ class SelectedPost(Handler):
             comment=self.request.get("comment"))
         blog_comment.put()
 
-        blog_comments = self.get_comments_for_post(post_id)
+        blog_comments = Comment.query().filter(Comment.post_id == post_id)
+        blog_comments = blog_comments.order(-Comment.created)
 
         params = {
             "header": BLOG_NAME,
@@ -436,12 +432,6 @@ class SelectedPost(Handler):
             "blog_comments": blog_comments
         }
         self.go_to_requested_page("blog.html", **params)
-
-    def get_comments_for_post(self, post_id):
-        """
-        Get all the comments for a paticular post.
-        """
-        return Comment.query()
 
     def edit_or_delete(self, userid, post_id, choice, blog_post):
         """
