@@ -418,7 +418,7 @@ class SelectedPost(Handler):
         """
         blog_comment = Comment(
             post_id=post_id,
-            commented_by=userid,
+            posted_by=userid,
             comment=self.request.get("comment"))
         blog_comment.put()
 

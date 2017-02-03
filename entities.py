@@ -19,7 +19,14 @@ class User(ndb.Model):
     joined = ndb.DateTimeProperty(auto_now_add=True)
 
 
-class Blog(ndb.Model):
+class MyModel(ndb.Model):
+    def get_poster(self):
+        """
+        Get the username of the user that created post.
+        """
+        return User.get_by_id(self.posted_by).username
+
+class Blog(MyModel):
     """
     Create entity for storing blog posts.
     """
@@ -28,12 +35,6 @@ class Blog(ndb.Model):
     content = ndb.TextProperty(required=True)
     num_likes = ndb.IntegerProperty(required=True)
     created = ndb.DateTimeProperty(auto_now_add=True)
-
-    def get_poster(self):
-        """
-        Get the username of the user that created post.
-        """
-        return User.get_by_id(self.posted_by).username
 
     def get_posts(self):
         """
@@ -51,12 +52,12 @@ class Likes(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add=True)
 
 
-class Comment(ndb.Model):
+class Comment(MyModel):
     """
     Entity for saving comments.
     """
     #The id of the post commented on
     comment = ndb.TextProperty(required=True)
     post_id = ndb.IntegerProperty(required=True)
-    commented_by = ndb.IntegerProperty(required=True)
+    posted_by = ndb.IntegerProperty(required=True)
     created = ndb.DateTimeProperty(auto_now_add=True)

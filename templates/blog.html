@@ -72,7 +72,17 @@
 
                     {% if params["blog_comments"] %}
                         {% for blog_comment in params["blog_comments"] %}
+                        <div class="post-comment">
                             <pre>{{ blog_comment.comment }}</pre>
+                            <div class="footer">
+                                <div class="posted-by">
+                                    Posted by {{ "blog_comment.get_poster()" }}
+                                </div>
+                                <div class="created">
+                                    At {{ blog_comment.created.strftime('%Y-%m-%d %H:%M') }}
+                                </div>
+                            </div>
+                        </div>
                         {% endfor %}
                     {% endif %}
                 {% endif %}
