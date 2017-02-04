@@ -278,7 +278,7 @@ class CreateOrEditPost(Handler):
         """
         Handle GET requests
         """
-        params["is_logged_in"] = is_logged_in()
+        params["is_logged_in"] = self.is_logged_in()
         if params["edit_mode"]:
             blog_post = self.get_post_from_cookie()
         else:
