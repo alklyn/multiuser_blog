@@ -76,7 +76,7 @@
                             <pre>{{ blog_comment.comment }}</pre>
                             <div class="footer">
                                 <div class="posted-by">
-                                    Posted by {{ "blog_comment.get_poster()" }}
+                                    Posted by {{ blog_comment.get_poster() }}
                                 </div>
                                 <div class="created">
                                     At {{ blog_comment.created.strftime('%Y-%m-%d %H:%M') }}
