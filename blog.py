@@ -422,6 +422,7 @@ class SelectedPost(Handler):
             comment=self.request.get("comment"))
         blog_comment.put()
 
+        # Use Post/Redirect/Get pattern to prevent repost.
         self.redirect("/blog/{}".format(post_id))
 
     def edit_or_delete(self, userid, post_id, choice, blog_post):
