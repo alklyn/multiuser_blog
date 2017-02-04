@@ -422,16 +422,7 @@ class SelectedPost(Handler):
             comment=self.request.get("comment"))
         blog_comment.put()
 
-        blog_comments = Comment.query().filter(Comment.post_id == post_id)
-        blog_comments = blog_comments.order(-Comment.created)
-
-        params = {
-            "header": BLOG_NAME,
-            "blog_posts": [blog_post],
-            "show_edit": True,
-            "blog_comments": blog_comments
-        }
-        self.go_to_requested_page("blog.html", **params)
+        self.redirect("/blog/{}".format(post_id))
 
     def edit_or_delete(self, userid, post_id, choice, blog_post):
         """
