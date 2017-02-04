@@ -423,7 +423,7 @@ class SelectedPost(Handler):
         blog_comment.put()
 
         # Use Post/Redirect/Get pattern to prevent repost.
-        self.redirect("/blog/{}".format(post_id))
+        self.redirect("/blog/comment_added")
 
     def edit_or_delete(self, userid, post_id, choice, blog_post):
         """
@@ -483,6 +483,25 @@ class SelectedPost(Handler):
         return ndb.GqlQuery(query).get()
 
 
+class CommentAdded(Handler):
+    """
+    Display message on successful addition of comment.
+    """
+    def get(self):
+        """
+        Handle GET requests.
+        """
+        user = self.get_user_from_cookie()
+        if not user:
+            self.redirect("/blog/login")
+        else:
+            blog = self.get_post_from_cookie()
+            params = {
+                "header": "Comment successfully added!",
+                "post_id": blog.key.id()}
+            self.go_to_requested_page("comment_added.html", **params)
+
+
 app = webapp2.WSGIApplication([
     ('/blog/signup', Signup),
     ('/blog/signup/', Signup),
@@ -497,4 +516,5 @@ app = webapp2.WSGIApplication([
     ('/blog/updatepost', UpdatePost),
     ('/blog/([\d]*)', SelectedPost),
     ('/blog/delete_successful', DeleteSuccessful),
+    ('/blog/comment_added', CommentAdded),
 ], debug=True)

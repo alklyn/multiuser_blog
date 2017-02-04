@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Comment successfully added.
+{% endblock %}
+
+{% block my_js %}
+    <script src="../static/js/blog.js"></script>
+{% endblock %}
+<
+{% block content %}
+    <script>
+        // Will call the function after 7 secs.
+        setTimeout(redirect({{ params["post_id"] }}), 20000);
+    </script>
+{% endblock %}
