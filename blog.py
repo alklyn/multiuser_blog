@@ -435,12 +435,13 @@ class SelectedPost(Handler):
 
     def edit_or_delete(self, userid, post_id, choice, blog_post):
         """
-        Perform edits or deletes
+        Perform edits or deletes or addsremoves likes
         """
         # Check if user is the author of the post.
         if userid == blog_post.posted_by:
             if choice == "delete":
-                ndb.delete(blog_post)
+                blog_post.key.delete()
+                self.delete_comments(post_id)
                 self.redirect("/blog/delete_successful")
             elif choice == "edit":
                 self.redirect("/blog/updatepost")
@@ -451,6 +452,15 @@ class SelectedPost(Handler):
                 self.like_unlike(post_id, userid)
             else:
                 self.render_selected_post(post_id, invalid_edit=True)
+
+    def delete_comments(self, post_id):
+        """
+        Delete all the comments for the post idetified by post_id.
+        """
+        comments = get_comments(post_id)
+        list_of_keys = ndb.put_multi(comments)
+        list_of_entities = ndb.get_multi(list_of_keys)
+        ndb.delete_multi(list_of_keys)
 
     def like_unlike(self, post_id, liked_by):
         """

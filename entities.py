@@ -3,6 +3,12 @@ Contains entities used y the app.
 """
 from google.appengine.ext import ndb
 
+def get_comments(post_id):
+    comments = Comment.query()
+    comments = comments.filter(Comment.post_id == post_id)
+    return comments.get()
+
+
 def get_user(username):
     users = User.query()
     users = users.filter(User.username == username)
