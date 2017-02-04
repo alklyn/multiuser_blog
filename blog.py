@@ -70,7 +70,7 @@ class Handler(webapp2.RequestHandler):
             blog_post = Blog.get_by_id(int(id_str))
             return blog_post
 
-    def is_logged_in(self, requested_page, **params):
+    def is_logged_in(self):
         """
         Check whether the user is logged in. If the user is logged in serve
         them the requested page otherwise redirect to signup page.
@@ -78,10 +78,9 @@ class Handler(webapp2.RequestHandler):
         user = self.get_user_from_cookie()
 
         if user:
-            params["username"] = user.username
-            self.go_to_requested_page(requested_page, **params)
+            return True
         else:
-            self.redirect("/blog/signup")
+            return False
 
     def go_to_requested_page(self, requested_page, **params):
         self.render(
@@ -226,7 +225,10 @@ class Welcome(Handler):
         if not user:
             self.redirect("/blog/signup")
         else:
-            params = {"header": "Welcome {}!".format(user.username)}
+            params = {
+                "is_logged_in": self.is_logged_in(),
+                "header": "Welcome {}!".format(user.username)
+            }
             self.go_to_requested_page("welcome.html", **params)
 
 
@@ -242,7 +244,10 @@ class DeleteSuccessful(Handler):
         if not user:
             self.redirect("/blog/signup")
         else:
-            params = {"header": "Post successfully deleted!"}
+            params = {
+                "is_logged_in": self.is_logged_in(),
+                "header": "Post successfully deleted!"
+            }
             self.go_to_requested_page("delete_successful.html", **params)
 
 
@@ -255,6 +260,7 @@ class BlogPage(Handler):
         user = self.get_user_from_cookie()
 
         params = {
+            "is_logged_in": self.is_logged_in(),
             "header": BLOG_NAME,
             "blog_posts": blog_posts,
             "show_edit": False}
@@ -272,6 +278,7 @@ class CreateOrEditPost(Handler):
         """
         Handle GET requests
         """
+        params["is_logged_in"] = is_logged_in()
         if params["edit_mode"]:
             blog_post = self.get_post_from_cookie()
         else:
@@ -376,6 +383,7 @@ class SelectedPost(Handler):
         blog_comments = blog_comments.order(-Comment.created)
 
         params = {
+            "is_logged_in": self.is_logged_in(),
             "header": BLOG_NAME,
             "show_edit": True,
             "blog_comments": blog_comments
@@ -497,6 +505,7 @@ class CommentAdded(Handler):
         else:
             blog = self.get_post_from_cookie()
             params = {
+                "is_logged_in": self.is_logged_in(),
                 "header": "Comment successfully added!",
                 "post_id": blog.key.id()}
             self.go_to_requested_page("comment_added.html", **params)
