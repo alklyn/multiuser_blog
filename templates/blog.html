@@ -57,6 +57,16 @@
                         </div>
                     </form>
 
+                    {% if params["invalid_edit"] %}
+                        <div class="alert alert-warning" role="alert">
+                            You can only update or delete your own post.
+                        </div>
+                    {% elif params["invalid_like"] %}
+                        <div class="alert alert-warning" role="alert">
+                            You cannot like your own post.
+                        </div>
+                    {% endif %}
+
                     <form class="add-comment" method="post">
                         <label  class="comment">
                             <div>
@@ -87,15 +97,6 @@
                     {% endif %}
                 {% endif %}
 
-                {% if params["invalid_edit"] %}
-                    <script>
-                        alert("You can only update or delete your own post.")
-                    </script>
-                {% elif params["invalid_like"] %}
-                    <script>
-                        alert("You cannot like your own post.")
-                    </script>
-                {% endif %}
             </div>
         {% else %}
             <div class="col-md-6 col-md-offset-3 panel panel-warning">

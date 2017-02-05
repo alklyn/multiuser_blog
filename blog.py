@@ -373,7 +373,10 @@ class UpdatePost(CreateOrEditPost):
 
 
 class SelectedPost(Handler):
-    """Display selected post or display latest post."""
+    """
+    Display selected post or display latest post.
+    """
+
     def render_selected_post(self, post_id, **params):
         """
         Display the post with the id "post_id"
@@ -382,12 +385,11 @@ class SelectedPost(Handler):
         blog_comments = Comment.query().filter(Comment.post_id == post_id)
         blog_comments = blog_comments.order(-Comment.created)
 
-        params = {
-            "is_logged_in": self.is_logged_in(),
-            "header": BLOG_NAME,
-            "show_edit": True,
-            "blog_comments": blog_comments
-        }
+        params["is_logged_in"] = self.is_logged_in()
+        params["header"] = BLOG_NAME
+        params["show_edit"] = True
+        params["blog_comments"] = blog_comments
+
 
         if Blog.get_by_id(int(post_id)):
             params["blog_posts"] = [Blog.get_by_id(int(post_id))]
@@ -446,6 +448,7 @@ class SelectedPost(Handler):
             elif choice == "edit":
                 self.redirect("/blog/updatepost")
             elif choice == "like":
+                self.response.write("Invalid like")
                 self.render_selected_post(post_id, invalid_like=True)
         else:
             if choice == "like":

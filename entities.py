@@ -9,7 +9,7 @@ def get_comments(post_id):
     """
     comments = Comment.query()
     comments = comments.filter(Comment.post_id == post_id)
-    return comments.get()
+    return comments
 
 
 def get_likes(post_id):
