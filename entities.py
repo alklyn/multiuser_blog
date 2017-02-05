@@ -7,9 +7,8 @@ def get_comments(post_id):
     """
     Get comments for the post identified by post_id.
     """
-    comments = Comment.query()
-    comments = comments.filter(Comment.post_id == post_id)
-    return comments
+    comments = Comment.query().filter(Comment.post_id == post_id)
+    return comments.order(-Comment.created)
 
 
 def get_likes(post_id):

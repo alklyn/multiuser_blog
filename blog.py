@@ -256,7 +256,7 @@ class BlogPage(Handler):
     Page for displaying posts.
     """
     def render_blog(self):
-        blog_posts = Blog.query().order(-Comment.created)
+        blog_posts = Blog.query().order(-Blog.created)
         user = self.get_user_from_cookie()
 
         params = {
@@ -382,8 +382,7 @@ class SelectedPost(Handler):
         Display the post with the id "post_id"
         """
         post_id = int(post_id)
-        blog_comments = Comment.query().filter(Comment.post_id == post_id)
-        blog_comments = blog_comments.order(-Comment.created)
+        blog_comments = get_comments(post_id)
 
         params["is_logged_in"] = self.is_logged_in()
         params["header"] = BLOG_NAME
