@@ -87,7 +87,7 @@ class Comment(MyModel):
     Entity for saving comments.
     """
     #The id of the post commented on
-    comment = ndb.TextProperty(required=True)
+    content = ndb.TextProperty(required=True)
     post_id = ndb.IntegerProperty(required=True)
     posted_by = ndb.IntegerProperty(required=True)
     created = ndb.DateTimeProperty(auto_now_add=True)

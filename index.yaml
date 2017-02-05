@@ -3,7 +3,7 @@ indexes:
 -   kind: Comment
     properties:
         -   name: post_id
-        -   name: comment
+        -   name: content
         -   name: posted_by
         -   name: created
             direction: desc

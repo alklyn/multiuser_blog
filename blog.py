@@ -428,7 +428,7 @@ class SelectedPost(Handler):
         blog_comment = Comment(
             post_id=post_id,
             posted_by=userid,
-            comment=self.request.get("comment"))
+            content=self.request.get("comment"))
         blog_comment.put()
 
         # Use Post/Redirect/Get pattern to prevent repost.

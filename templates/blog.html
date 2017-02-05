@@ -83,7 +83,7 @@
                     {% if params["blog_comments"] %}
                         {% for blog_comment in params["blog_comments"] %}
                         <div class="post-comment">
-                            <pre>{{ blog_comment.comment }}</pre>
+                            <pre>{{ blog_comment.content }}</pre>
                             <div class="footer">
                                 <div class="posted-by">
                                     Posted by {{ blog_comment.get_poster() }}
