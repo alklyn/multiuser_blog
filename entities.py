@@ -1,15 +1,40 @@
 """
-Contains entities used y the app.
+Contains entities used by the app.
 """
 from google.appengine.ext import ndb
 
 def get_comments(post_id):
+    """
+    Get comments for the post identified by post_id.
+    """
     comments = Comment.query()
     comments = comments.filter(Comment.post_id == post_id)
     return comments.get()
 
 
+def get_likes(post_id):
+    """
+    Get likes for the post identified by post_id.
+    """
+    likes = Likes.query()
+    likes = likes.filter(Likes.post_id == post_id)
+    return likes.order(-Likes.created)
+
+
+def get_like(post_id, liked_by):
+    """
+    Get the like added by user identified by liked_by to the post identified by
+    post_id.
+    """
+    likes = Likes.query()
+    likes = likes.filter(Likes.post_id == post_id, Likes.liked_by == liked_by)
+    return likes.get()
+
+
 def get_user(username):
+    """
+    Get user from their username
+    """
     users = User.query()
     users = users.filter(User.username == username)
     return users.get()

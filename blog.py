@@ -468,9 +468,9 @@ class SelectedPost(Handler):
         """
         post_id = int(post_id)
         blog_post = Blog.get_by_id(int(post_id))
-        like = self.get_like(post_id, liked_by)
+        like = get_like(post_id, liked_by)
         if like:
-            ndb.delete(like)
+            like.key.delete()
             blog_post.num_likes -= 1
         else:
             like = Likes(post_id=post_id, liked_by=liked_by)
@@ -488,17 +488,6 @@ class SelectedPost(Handler):
         self.response.headers.add_header(
             "Set-Cookie",
             "post_id={};Path=/".format(new_cookie_val))
-
-    def get_like(self, post_id, liked_by):
-        """
-        Get a particular like from the database.
-        """
-        query = """
-            SELECT * FROM Likes
-            WHERE post_id = {}
-            AND liked_by = {};
-        """.format(post_id, liked_by)
-        return ndb.GqlQuery(query).get()
 
 
 class CommentAdded(Handler):
