@@ -478,7 +478,7 @@ class SelectedPost(Handler):
             blog_post.num_likes += 1
 
         blog_post.put()
-        self.render_selected_post(post_id)
+        self.redirect("/blog/comment_added")
 
     def set_post_cookie(self, post_id):
         """

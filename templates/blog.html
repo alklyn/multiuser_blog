@@ -88,13 +88,13 @@
                 {% endif %}
 
                 {% if params["invalid_edit"] %}
-                    <div class="error">
-                        You can only update or delete your own post.
-                    </div>
+                    <script>
+                        alert("You can only update or delete your own post.")
+                    </script>
                 {% elif params["invalid_like"] %}
-                    <div class="error">
-                        You cannot like your own post.
-                    </div>
+                    <script>
+                        alert("You cannot like your own post.")
+                    </script>
                 {% endif %}
             </div>
         {% else %}
