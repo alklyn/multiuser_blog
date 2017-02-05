@@ -10,6 +10,6 @@
 <
 {% block content %}
     <script>
-        redirect({{ params["post_id"] }});
+        setTimeout(redirect({{ params["post_id"] }}), 7000);
     </script>
 {% endblock %}

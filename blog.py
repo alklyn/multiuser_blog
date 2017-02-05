@@ -448,7 +448,6 @@ class SelectedPost(Handler):
             elif choice == "edit":
                 self.redirect("/blog/updatepost")
             elif choice == "like":
-                self.response.write("Invalid like")
                 self.render_selected_post(post_id, invalid_like=True)
         else:
             if choice == "like":
