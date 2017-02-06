@@ -382,12 +382,11 @@ class SelectedPost(Handler):
         Display the post with the id "post_id"
         """
         post_id = int(post_id)
-        blog_comments = get_comments(post_id)
 
         params["is_logged_in"] = self.is_logged_in()
         params["header"] = BLOG_NAME
         params["show_edit"] = True
-        params["blog_comments"] = blog_comments
+        params["blog_comments"] = get_comments(post_id)
 
 
         if Blog.get_by_id(int(post_id)):
