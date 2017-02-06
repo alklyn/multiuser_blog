@@ -50,7 +50,7 @@ pre {
     margin-top: 2vh;
 }
 
-.edit + .edit {
+.edit + .edit, .modal + .edit {
     margin-left: 20px;
 }
 
@@ -60,4 +60,8 @@ pre {
 
 .comment {
     width: 100%;
+}
+
+h4 {
+    margin-top: 5vh;
 }
