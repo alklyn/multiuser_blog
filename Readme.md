@@ -22,3 +22,6 @@ registration  & login and secure storage of user passwords in a database
 * When developing locally, you can use ```dev_appserver.py ```
   to run a copy of your app on your own computer, and access it at http://localhost:8080/.
 * Deploy your project with ```gcloud app deploy```.
+
+The project is availale on the URL below
+[Some Random Blog](https://somerandomblog-157714.appspot.com/blog/).
