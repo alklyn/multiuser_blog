@@ -38,7 +38,7 @@ pre {
     font-style: italic;
 }
 
-.edit-or-delete, .post-header, .footer {
+.edit-or-delete, .post-header, .footer, .delete-or-like {
     display: flex;
 }
 
@@ -50,7 +50,7 @@ pre {
     margin-top: 2vh;
 }
 
-.edit + .edit, .modal + .edit {
+.edit + .edit, .spacer + .spacer {
     margin-left: 20px;
 }
 
@@ -64,4 +64,9 @@ pre {
 
 h4 {
     margin-top: 5vh;
+}
+
+.spacer {
+    max-height: 40px;
+    margin-top: auto;
 }
