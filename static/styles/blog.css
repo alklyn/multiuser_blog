@@ -70,3 +70,9 @@ h4 {
     max-height: 40px;
     margin-top: auto;
 }
+
+#myModalHorizontal {
+top:50%;
+right:10%;
+outline: none;
+}
