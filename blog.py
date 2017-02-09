@@ -415,10 +415,24 @@ class SelectedPost(Handler):
             self.set_post_cookie(post_id)
             choice = self.request.get("choice")
 
-            if choice == "add_comment":
+            if choice == "edit_comment":
+                self.edit_comment(userid)
+            elif choice == "add_comment":
                 self.add_comment(userid, post_id, blog_post)
             else:
                 self.edit_or_delete(userid, post_id, choice, blog_post)
+
+    def edit_comment(self, userid):
+        """
+        Edit comment.
+        """
+        comment_id = self.request.get("comment_id")
+        # self.response.write(comment_id)
+        blog_comment = Comment.get_by_id(int(comment_id))
+        blog_comment.content = self.request.get("comment")
+        blog_comment.put()
+        # Use Post/Redirect/Get pattern to prevent repost.
+        self.redirect("/blog/comment_added")
 
     def add_comment(self, userid, post_id, blog_post):
         """
@@ -429,7 +443,6 @@ class SelectedPost(Handler):
             posted_by=userid,
             content=self.request.get("comment"))
         blog_comment.put()
-
         # Use Post/Redirect/Get pattern to prevent repost.
         self.redirect("/blog/comment_added")
 
