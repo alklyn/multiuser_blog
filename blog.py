@@ -416,23 +416,29 @@ class SelectedPost(Handler):
             choice = self.request.get("choice")
 
             if choice == "edit_comment":
-                self.edit_comment(userid)
+                self.edit_comment(userid, post_id)
             elif choice == "add_comment":
                 self.add_comment(userid, post_id, blog_post)
             else:
                 self.edit_or_delete(userid, post_id, choice, blog_post)
 
-    def edit_comment(self, userid):
+    def edit_comment(self, userid, post_id):
         """
         Edit comment.
         """
-        comment_id = self.request.get("comment_id")
+        comment_id = int(self.request.get("comment_id"))
         # self.response.write(comment_id)
-        blog_comment = Comment.get_by_id(int(comment_id))
-        blog_comment.content = self.request.get("comment")
-        blog_comment.put()
-        # Use Post/Redirect/Get pattern to prevent repost.
-        self.redirect("/blog/comment_added")
+        blog_comment = Comment.get_by_id(comment_id)
+        if userid == blog_comment.posted_by:
+            blog_comment.content = self.request.get("comment")
+            blog_comment.put()
+            # Use Post/Redirect/Get pattern to prevent repost.
+            self.redirect("/blog/comment_added")
+        else:
+            comment_invalid_edit = comment_id
+            self.render_selected_post(
+                post_id,
+                comment_invalid_edit=comment_invalid_edit)
 
     def add_comment(self, userid, post_id, blog_post):
         """
