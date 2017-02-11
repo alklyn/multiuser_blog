@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Comment successfully added.
+    Processing request ...
 {% endblock %}
 
 {% block my_js %}
@@ -10,6 +10,6 @@
 <
 {% block content %}
     <script>
-        setTimeout(function() { redirect({{ params["post_id"] }}); }, 1000);
+        setTimeout(function() { redirect({{ params["post_id"] }}); }, 50);
     </script>
 {% endblock %}

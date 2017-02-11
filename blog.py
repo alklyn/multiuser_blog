@@ -437,7 +437,7 @@ class SelectedPost(Handler):
                 blog_comment.content = self.request.get("comment")
                 blog_comment.put()
             # Use Post/Redirect/Get pattern to prevent repost.
-            self.redirect("/blog/comment_added")
+            self.redirect("/blog/in_transit")
         else:
             comment_invalid_edit = comment_id
             self.render_selected_post(
@@ -454,7 +454,7 @@ class SelectedPost(Handler):
             content=self.request.get("comment"))
         blog_comment.put()
         # Use Post/Redirect/Get pattern to prevent repost.
-        self.redirect("/blog/comment_added")
+        self.redirect("/blog/in_transit")
 
     def edit_or_delete(self, userid, post_id, choice, blog_post):
         """
@@ -501,7 +501,7 @@ class SelectedPost(Handler):
             blog_post.num_likes += 1
 
         blog_post.put()
-        self.redirect("/blog/comment_added")
+        self.redirect("/blog/in_transit")
 
     def set_post_cookie(self, post_id):
         """
@@ -513,9 +513,10 @@ class SelectedPost(Handler):
             "post_id={};Path=/".format(new_cookie_val))
 
 
-class CommentAdded(Handler):
+class InTransit(Handler):
     """
-    Display message on successful addition of comment.
+    Stop-over page to help implement  Post/Redirect/Get pattern to prevent
+    reposting ocurring when a page with a form is refreshed.
     """
     def get(self):
         """
@@ -530,7 +531,7 @@ class CommentAdded(Handler):
                 "is_logged_in": self.is_logged_in(),
                 "header": "Comment successfully added!",
                 "post_id": blog.key.id()}
-            self.go_to_requested_page("comment_added.html", **params)
+            self.go_to_requested_page("in_transit.html", **params)
 
 
 app = webapp2.WSGIApplication([
@@ -547,5 +548,5 @@ app = webapp2.WSGIApplication([
     ('/blog/updatepost', UpdatePost),
     ('/blog/([\d]*)', SelectedPost),
     ('/blog/delete_successful', DeleteSuccessful),
-    ('/blog/comment_added', CommentAdded),
+    ('/blog/in_transit', InTransit),
 ], debug=True)
