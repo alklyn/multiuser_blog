@@ -46,16 +46,12 @@ pre {
     margin-left: auto;
 }
 
-.edit {
-    margin-top: 2vh;
+.edit, .btn-add-comment {
+    margin-top: 3vh;
 }
 
 .edit + .edit, .btn + .btn {
     margin-left: 20px;
-}
-
-.add-comment {
-    display: block;
 }
 
 .comment {
@@ -71,8 +67,8 @@ h4 {
     margin-top: auto;
 }
 
-.edit-comment {
-top: 40%;
+.edit-comment, .add-comment {
+top: 30%;
 right: 0%;
 outline: none;
 }
