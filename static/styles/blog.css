@@ -3,7 +3,7 @@
 }
 
 .blog-post + .blog-post, form + form, .post-comment {
-    margin-top: 30px;
+    margin-top: 3vh;
 }
 
 .created {
@@ -46,12 +46,12 @@ pre {
     margin-left: auto;
 }
 
-.edit, .btn-add-comment {
-    margin-top: 3vh;
+.edit {
+    margin-top: 1vh;
 }
 
 .edit + .edit, .btn + .btn {
-    margin-left: 20px;
+    margin-left: 1vw;
 }
 
 .comment {
@@ -68,7 +68,11 @@ h4 {
 }
 
 .edit-comment, .add-comment {
-top: 30%;
+top: 20%;
 right: 0%;
 outline: none;
+}
+
+.btn-add-comment {
+    margin-top: 4vh;
 }
