@@ -53,6 +53,10 @@ class Handler(webapp2.RequestHandler):
     def get_user_from_cookie(self):
         """
         Get user details based on user cookie.
+
+        return:
+            user: an object of the type User if the cookie is valid
+            None: if the cookie is not valid.
         """
         user_cookie_val = self.request.cookies.get("userid")
         id_str = check_secure_val(user_cookie_val, SECRET)
@@ -223,7 +227,7 @@ class Welcome(Handler):
         """
         user = self.get_user_from_cookie()
         if not user:
-            self.redirect("/blog/signup")
+            self.redirect("/blog/login")
         else:
             params = {
                 "is_logged_in": self.is_logged_in(),
@@ -329,6 +333,8 @@ class CreateOrEditPost(Handler):
         """
         if params["edit_mode"]:
             blog = self.get_post_from_cookie()
+            if blog is None:
+                self.abort(500)
             blog.subject = params["subject"]
             blog.content = params["content"]
         else:
@@ -430,6 +436,9 @@ class SelectedPost(Handler):
         # self.response.write(comment_id)
 
         blog_comment = Comment.get_by_id(comment_id)
+        if blog_comment is None:
+            self.abort(500)
+
         if userid == blog_comment.posted_by:
             if choice == "delete_comment":
                 blog_comment.key.delete()
@@ -448,19 +457,29 @@ class SelectedPost(Handler):
         """
         Add comment to posts.
         """
-        blog_comment = Comment(
-            post_id=post_id,
-            posted_by=userid,
-            content=self.request.get("comment"))
-        blog_comment.put()
-        # Use Post/Redirect/Get pattern to prevent repost.
-        self.redirect("/blog/in_transit")
+        content = self.request.get("comment")
+        if content is None:
+            self.abort(500)
+
+        if content.strip():
+            blog_comment = Comment(
+                post_id=post_id,
+                posted_by=userid,
+                content=content)
+            blog_comment.put()
+            # Use Post/Redirect/Get pattern to prevent repost.
+            self.redirect("/blog/in_transit")
+        else:
+            # Handle empty comments.
+            self.render_selected_post(post_id, empty_comment=True)
 
     def edit_or_delete(self, userid, post_id, choice, blog_post):
         """
-        Perform edits or deletes or addsremoves likes
+        Perform edits or deletes or add
+        todo separate to make code clearer.
         """
         # Check if user is the author of the post.
+
         if userid == blog_post.posted_by:
             if choice == "delete":
                 blog_post.key.delete()

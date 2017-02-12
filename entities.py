@@ -3,6 +3,19 @@ Contains entities used by the app.
 """
 from google.appengine.ext import ndb
 
+
+def check_if_id_valid(Item, item_id):
+    """
+    Check if item_id is a valid id for the entity Item.
+
+    return:
+        item: the instance of the entity identified by item_id if it is valid.
+        None: if the id is not valid.
+    """
+    key = ndb.Key(Item, item_id)
+    return key.get()
+
+
 def get_comments(post_id):
     """
     Get comments for the post identified by post_id.
